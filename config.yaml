@@ -1,0 +1,13 @@
+# 服务器配置
+server:
+  name: "My Server"
+  cookie_key: "4238uihfieh49r3453kjdfg"
+  port: 8080
+
+# 数据库配置
+mysql:
+  host: "localhost"
+  port: 3306
+  user: "root"
+  password: "123456"
+  database: "hmdp"
