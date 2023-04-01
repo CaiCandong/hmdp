@@ -1,0 +1,26 @@
+# 服务器配置
+server:
+  name: "My Server"
+  cookie_key: "4238uihfieh49r3453kjdfg"
+  port: 8080
+  mode: 'debug'
+  session_secret: "setOnProducation"
+# 日志配置
+log:
+  level: 'debug'
+
+# 数据库配置
+mysql:
+  host: "localhost"
+  port: 3306
+  user: "root"
+  password: "123456"
+  database: "hmdp_golang"
+
+# redis配置
+redis:
+  size: 10
+  network: "tcp"
+  address: "localhost:6379"
+  password: "123456"
+  db: 0
