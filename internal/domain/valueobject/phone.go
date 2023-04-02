@@ -1,6 +1,7 @@
-package entity
+package valueobject
 
 import (
+	"hmdp/pkg/logger"
 	"regexp"
 )
 
@@ -12,6 +13,12 @@ func (p Phone) VerifyMobileFormat() bool {
 
 	reg := regexp.MustCompile(regular)
 	return reg.MatchString(string(p))
+}
+
+func (p Phone) SendCode(code string) error {
+	//TODO:调用运营商SDK下发验证码
+	logger.Logger.Info("code" + code)
+	return nil
 }
 
 //func (p Phone) GenValidateCode(width int) string {

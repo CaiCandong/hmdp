@@ -22,5 +22,5 @@ redis:
   size: 10
   network: "tcp"
   address: "localhost:6379"
-  password: "123456"
+  password: ""
   db: 0

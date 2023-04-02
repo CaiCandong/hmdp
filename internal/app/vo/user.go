@@ -1,7 +1,7 @@
 package vo
 
 import (
-	"hmdp/internal/infrastructure/mysql"
+	"hmdp/internal/domain/entity"
 	"hmdp/pkg/serializer"
 )
 
@@ -11,7 +11,7 @@ type UserDTO struct {
 	Icon     string `json:"icon"`
 }
 
-func BuildUserResponse(user *mysql.User) serializer.Response {
+func BuildUserResponse(user entity.User) serializer.Response {
 	dto := UserDTO{
 		ID:       user.ID,
 		NickName: user.NickName,

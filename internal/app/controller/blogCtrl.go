@@ -2,9 +2,8 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"hmdp/internal/app/vo"
+	"hmdp/internal/app/services"
 	"hmdp/internal/infrastructure/mysql"
-	"hmdp/pkg/serializer"
 	"net/http"
 )
 
@@ -14,22 +13,27 @@ type BlogController interface {
 }
 
 func NewBlogController() BlogController {
-	return BlogControllerImp{}
+	// 进行依赖注入
+	blogRepo := mysql.NewBlogRepo()
+	blogService := services.NewBlogService(services.WithBlogRepo(blogRepo))
+	return BlogControllerImp{blogService}
 }
 
 type BlogControllerImp struct {
+	blogService services.IBlogService
 }
 
 func (b BlogControllerImp) Find(ctx *gin.Context) {
 	// 根据id获取博客详情
 	id := ctx.Param("id")
-	blog, err := mysql.GetBlog(id)
+	resp, err := b.blogService.GetBlog(id)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, serializer.Response{Success: false})
+		resp.Success = false
+		ctx.JSON(http.StatusInternalServerError, resp)
 		return
 	}
-	// TODO:查看当前用户是否点赞
-	ctx.JSON(http.StatusOK, serializer.Response{Success: true, Data: blog})
+	resp.Success = true
+	ctx.JSON(http.StatusOK, resp)
 }
 
 func (b BlogControllerImp) Hot(ctx *gin.Context) {
@@ -40,13 +44,11 @@ func (b BlogControllerImp) Hot(ctx *gin.Context) {
 	if err := ctx.ShouldBind(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 	}
-	blogs, err := mysql.GetBlogs(req.Current, 10)
-	users := make([]mysql.User, len(blogs))
-	for i := range blogs {
-		users[i], _ = mysql.GetUser(blogs[i].UserId)
-	}
+	resp, err := b.blogService.Hot(req.Current, 10)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
+		resp.Success = false
+		ctx.JSON(http.StatusBadRequest, resp)
 	}
-	ctx.JSON(http.StatusOK, vo.BuildBlogsResponse(blogs, users))
+	resp.Success = true
+	ctx.JSON(http.StatusOK, resp)
 }

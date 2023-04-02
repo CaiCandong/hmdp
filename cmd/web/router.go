@@ -3,13 +3,14 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"hmdp/internal/app/middleware"
+	"hmdp/internal/infrastructure/mysql"
 	"hmdp/internal/view/api"
 )
 
 func InitRoute() *gin.Engine {
 	router := gin.Default()
 	router.Use(middleware.EnableCookieSession())
-	router.Use(middleware.CurrentUser())
+	router.Use(middleware.CurrentUser(mysql.NewUserRepo()))
 
 	// 绑定用户相关的路由
 	api.RegisterUserRoutes(router.Group("/user"))

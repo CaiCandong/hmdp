@@ -6,6 +6,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"hmdp/internal/domain/entity"
 	logger2 "hmdp/pkg/logger"
 	"log"
 	"os"
@@ -62,5 +63,17 @@ func InitDB() {
 
 func migration() {
 	// 自动迁移模式
-	_ = DB.AutoMigrate(&User{}, &ShowType{}, &Blog{})
+	_ = DB.AutoMigrate(
+		&entity.User{},
+		&entity.ShowType{},
+		&entity.Blog{},
+	)
 }
+
+// GetDB 单例模式建立数据库连接
+//func GetDB() *gorm.DB {
+//	if globalDB == nil {
+//		InitDB()
+//	}
+//	return globalDB
+//}

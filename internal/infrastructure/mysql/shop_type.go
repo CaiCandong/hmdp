@@ -1,20 +1,19 @@
 package mysql
 
-import "gorm.io/gorm"
+import (
+	"hmdp/internal/domain/entity"
+	"hmdp/internal/domain/repository"
+)
 
-type ShowType struct {
-	gorm.Model
-	Name string `gorm:"column:name;type:varchar(32)" json:"name"`
-	Icon string `gorm:"column:icon;type:varchar(255)" json:"icon"`
-	Sort uint   `gorm:"column:sort" json:"sort"`
+type ShopTypeRepo struct {
 }
 
-func (st *ShowType) TableName() string {
-	return "tb_shop_type"
+func NewShopTypeRepo() repository.IShowType {
+	return &ShopTypeRepo{}
 }
 
-func GetShopTypeList() ([]ShowType, error) {
-	var showtypes []ShowType
+func (shop *ShopTypeRepo) GetShopTypeList() ([]entity.ShowType, error) {
+	var showtypes []entity.ShowType
 	result := DB.Find(&showtypes)
 	if result.Error != nil {
 		return nil, result.Error

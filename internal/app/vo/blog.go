@@ -1,7 +1,7 @@
 package vo
 
 import (
-	"hmdp/internal/infrastructure/mysql"
+	"hmdp/internal/domain/entity"
 	"hmdp/pkg/serializer"
 )
 
@@ -18,7 +18,7 @@ type BlogVO struct {
 	Comments uint   `json:"comments"`
 }
 
-func buildBlog(blog mysql.Blog, user mysql.User) BlogVO {
+func buildBlog(blog entity.Blog, user entity.User) BlogVO {
 	return BlogVO{
 		Id:       blog.ID,
 		ShopId:   blog.ShopId,
@@ -33,7 +33,7 @@ func buildBlog(blog mysql.Blog, user mysql.User) BlogVO {
 	}
 }
 
-func buildBlogs(blogs []mysql.Blog, users []mysql.User) (blogDTOs []BlogVO) {
+func buildBlogs(blogs []entity.Blog, users []entity.User) (blogDTOs []BlogVO) {
 	blogDTOs = make([]BlogVO, len(blogs))
 	for i := range blogs {
 		blogDTOs[i] = buildBlog(blogs[i], users[i])
@@ -41,7 +41,7 @@ func buildBlogs(blogs []mysql.Blog, users []mysql.User) (blogDTOs []BlogVO) {
 	return
 }
 
-func BuildBlogsResponse(blogs []mysql.Blog, users []mysql.User) serializer.Response {
+func BuildBlogsResponse(blogs []entity.Blog, users []entity.User) serializer.Response {
 	return serializer.Response{
 		Success: true,
 		Data:    buildBlogs(blogs, users),
