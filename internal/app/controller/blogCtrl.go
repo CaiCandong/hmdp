@@ -48,6 +48,7 @@ func (b BlogControllerImp) Hot(ctx *gin.Context) {
 	if err != nil {
 		resp.Success = false
 		ctx.JSON(http.StatusBadRequest, resp)
+		return
 	}
 	resp.Success = true
 	ctx.JSON(http.StatusOK, resp)

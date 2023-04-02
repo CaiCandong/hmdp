@@ -1,7 +1,6 @@
 package mysql
 
 import (
-	"gorm.io/gorm"
 	"hmdp/internal/domain/entity"
 	"hmdp/internal/domain/repository"
 	"hmdp/pkg/utils"
@@ -38,17 +37,7 @@ func (repo *UserRepo) CreateUserWithPhone(phone string) (entity.User, error) {
 }
 
 func (repo *UserRepo) GetUserOrCreate(phone string) (entity.User, error) {
-	var user entity.User
-	err := DB.Where("phone = ?", phone).First(&user).Error
-	if err == gorm.ErrRecordNotFound {
-		user = entity.CreateDefaultUser(phone)
-		err = DB.Create(&user).Error
-		if err != nil {
-			return user, err
-		}
-	} else if err != nil {
-		// some other error occurred
-		return user, err
-	}
-	return user, nil
+	user := entity.CreateDefaultUser(phone)
+	err := DB.Where(entity.User{Phone: phone}).FirstOrCreate(&user).Error
+	return user, err
 }

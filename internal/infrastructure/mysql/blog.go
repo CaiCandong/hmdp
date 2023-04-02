@@ -23,6 +23,11 @@ func (b *BlogRepo) GetBlog(ID any) (entity.Blog, error) {
 func (b *BlogRepo) GetBlogs(page, pageSize int) ([]entity.Blog, error) {
 	// 使用Gorm的Offset和Limit函数进行分页
 	var blogs []entity.Blog
-	err := DB.Offset((page - 1) * pageSize).Limit(pageSize).Find(&blogs).Error
+	//err := DB.Model(&entity.Blog{}).Find(&blogs).Error
+	err := DB.Model(entity.Blog{}).
+		Preload("User").Offset((page - 1) * pageSize).
+		Limit(pageSize).Find(&blogs).Error
+
+	//err := DB.Offset((page - 1) * pageSize).Limit(pageSize).Find(&blogs).Error
 	return blogs, err
 }

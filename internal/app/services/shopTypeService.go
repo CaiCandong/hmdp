@@ -1,6 +1,7 @@
 package services
 
 import (
+	"hmdp/internal/app/vo"
 	"hmdp/internal/domain/repository"
 	"hmdp/pkg/serializer"
 )
@@ -41,5 +42,5 @@ func (s ShowTypeService) List() (serializer.Response, error) {
 	if err != nil {
 		return serializer.Response{}, nil
 	}
-	return serializer.Response{Data: shoptypes}, nil
+	return serializer.Response{Data: vo.BuildShowTypeVos(shoptypes)}, nil
 }

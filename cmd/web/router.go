@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"hmdp/internal/app/middleware"
 	"hmdp/internal/infrastructure/mysql"
-	"hmdp/internal/view/api"
+	"hmdp/internal/interfaces/api"
 )
 
 func InitRoute() *gin.Engine {

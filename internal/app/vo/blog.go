@@ -8,7 +8,7 @@ import (
 type BlogVO struct {
 	Id       uint   `json:"id"`
 	ShopId   int64  `json:"shopId"`
-	UserId   uint64 `json:"userId"`
+	UserId   uint   `json:"userId"`
 	UserIcon string `json:"icon"`
 	UserName string `json:"name"` //发布博客的用户名
 	Title    string `json:"title"`
@@ -18,13 +18,13 @@ type BlogVO struct {
 	Comments uint   `json:"comments"`
 }
 
-func buildBlog(blog entity.Blog, user entity.User) BlogVO {
+func buildBlog(blog entity.Blog) BlogVO {
 	return BlogVO{
-		Id:       blog.ID,
-		ShopId:   blog.ShopId,
+		Id: blog.ID,
+		//ShopId:   blog.ShopId,
 		UserId:   blog.UserId,
-		UserIcon: user.Icon,
-		UserName: user.NickName,
+		UserIcon: blog.User.Icon,
+		UserName: blog.User.NickName,
 		Title:    blog.Title,
 		Images:   blog.Images,
 		Content:  blog.Content,
@@ -33,17 +33,17 @@ func buildBlog(blog entity.Blog, user entity.User) BlogVO {
 	}
 }
 
-func buildBlogs(blogs []entity.Blog, users []entity.User) (blogDTOs []BlogVO) {
+func buildBlogs(blogs []entity.Blog) (blogDTOs []BlogVO) {
 	blogDTOs = make([]BlogVO, len(blogs))
 	for i := range blogs {
-		blogDTOs[i] = buildBlog(blogs[i], users[i])
+		blogDTOs[i] = buildBlog(blogs[i])
 	}
 	return
 }
 
-func BuildBlogsResponse(blogs []entity.Blog, users []entity.User) serializer.Response {
+func BuildBlogsResponse(blogs []entity.Blog) serializer.Response {
 	return serializer.Response{
 		Success: true,
-		Data:    buildBlogs(blogs, users),
+		Data:    buildBlogs(blogs),
 	}
 }

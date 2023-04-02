@@ -74,6 +74,7 @@ func (u *UserControllerImp) Login(ctx *gin.Context) {
 	// 参数绑定
 	if err = ctx.ShouldBind(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
+		return
 	}
 	resp, err := u.userService.LoginByCode(ctx, req.Phone, req.Code)
 	if err != nil {
@@ -82,6 +83,7 @@ func (u *UserControllerImp) Login(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, resp)
+	return
 }
 
 func (u *UserControllerImp) Me(ctx *gin.Context) {

@@ -1,6 +1,7 @@
 package services
 
 import (
+	"hmdp/internal/app/vo"
 	"hmdp/internal/domain/repository"
 	"hmdp/pkg/serializer"
 )
@@ -50,5 +51,5 @@ func (b BlogService) Hot(page, pageSize int) (serializer.Response, error) {
 	if err != nil {
 		return serializer.Response{}, err
 	}
-	return serializer.Response{Data: blogs}, nil
+	return vo.BuildBlogsResponse(blogs), nil
 }

@@ -51,14 +51,13 @@ func WithUserRepo(userRepo repository.IUserRepo) UserConfiguration {
 func (s *UserService) LoginByCode(ctx *gin.Context, phone valueobject.Phone, Code string) (res serializer.Response, err error) {
 
 	// 校验手机号码
-	if phone.VerifyMobileFormat() {
-		ctx.JSON(http.StatusBadRequest, gin.H{"err": "手机号码错误"})
+	if !phone.VerifyMobileFormat() {
+		return serializer.Response{Success: false, ErrorMsg: "手机号码错误"}, nil
 	}
 	// 校验验证码是否一致
 	session := sessions.Default(ctx)
 	originalCode := session.Get("code")
 	if code, ok := originalCode.(string); !ok || code != Code {
-		//ctx.JSON(http.StatusBadRequest, gin.H{"err": "验证码错误"})
 		return res, err
 	}
 	// 数据库查询
@@ -69,7 +68,6 @@ func (s *UserService) LoginByCode(ctx *gin.Context, phone valueobject.Phone, Cod
 	session.Set("user_id", user.ID)
 	err = session.Save()
 	if err != nil {
-		//ctx.JSON(http.StatusBadRequest, gin.H{"err": "session报错失败"})
 		return res, err
 	}
 	res.Data = user
