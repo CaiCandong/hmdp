@@ -38,6 +38,7 @@ type TrackedErrorResponse struct {
 // Err 通用错误处理
 func Err(errCode int, msg string, err error) Response {
 	res := Response{
+		Success:  false,
 		Code:     errCode,
 		ErrorMsg: msg,
 	}
@@ -54,4 +55,11 @@ func ParamErr(msg string, err error) Response {
 		msg = "参数错误"
 	}
 	return Err(CodeParamErr, msg, err)
+}
+func Success(data any) Response {
+	res := Response{
+		Success: true,
+		Data:    data,
+	}
+	return res
 }

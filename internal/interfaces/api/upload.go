@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"hmdp/internal/app/controller"
+	"hmdp/internal/interfaces/controller"
 )
 
 // RegisterUploadRoutes 注册用户相关的路由

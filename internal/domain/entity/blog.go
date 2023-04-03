@@ -2,20 +2,6 @@ package entity
 
 import "gorm.io/gorm"
 
-//type Blog struct {
-//	gorm.Model
-//	Id       uint   `json:"id"`
-//	ShopId   int64  `json:"shopId"`
-//	UserId   uint64 `json:"userId"`
-//	UserIcon string `json:"icon"`
-//	UserName string `json:"name"` //发布博客的用户名
-//	Title    string `json:"title"`
-//	Images   string `json:"images"`
-//	Content  string `json:"content"`
-//	Liked    uint   `json:"liked"`
-//	Comments uint   `json:"comments"`
-//}
-
 type Blog struct {
 	gorm.Model
 	//ShopId   int64  `gorm:"column:shop_id;type:bigint(20);comment:商户id;NOT NULL" json:"shopId"`

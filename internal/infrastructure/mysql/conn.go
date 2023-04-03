@@ -16,7 +16,7 @@ import (
 var DB *gorm.DB
 
 // InitDB  在中间件中初始化mysql链接
-func InitDB() {
+func InitDB() *gorm.DB {
 
 	// 从配置文件中获取 MySQL 相关信息
 	host := viper.GetString("mysql.host")
@@ -59,6 +59,7 @@ func InitDB() {
 	DB = db
 
 	migration()
+	return DB
 }
 
 func migration() {

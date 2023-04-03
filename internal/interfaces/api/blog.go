@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"hmdp/internal/app/controller"
+	"hmdp/internal/interfaces/controller"
 )
 
 // RegisterBlogRoutes 注册用户相关的路由
@@ -20,5 +20,4 @@ func RegisterBlogRoutes(r *gin.RouterGroup) {
 	r.GET("/hot", blogCtrl.Hot)
 	r.GET("/:id", blogCtrl.Find)
 	r.GET("/of/follow")
-
 }

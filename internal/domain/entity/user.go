@@ -3,7 +3,9 @@ package entity
 import (
 	"fmt"
 	"gorm.io/gorm"
+	"hmdp/pkg/logger"
 	"hmdp/pkg/utils"
+	"regexp"
 )
 
 type User struct {
@@ -23,4 +25,18 @@ func CreateDefaultUser(phone string) User {
 		Phone:    phone,
 		NickName: fmt.Sprintf("user_%v", utils.RandStringBytes(10)),
 	}
+}
+
+func (u *User) VerifyMobileFormat() bool {
+	// 校验手机号码格式
+	regular := "^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-8])|(18[0-9])|166|198|199|(147))\\d{8}$"
+
+	reg := regexp.MustCompile(regular)
+	return reg.MatchString(string(u.Phone))
+}
+
+func (u *User) SendCode(code string) error {
+	//TODO:调用运营商SDK下发验证码
+	logger.Logger.Info(fmt.Sprintf("phone:%v;code:%v", u.Phone, code))
+	return nil
 }

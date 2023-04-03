@@ -1,17 +1,18 @@
 package mysql
 
 import (
+	"gorm.io/gorm"
 	"hmdp/internal/domain/entity"
 	"hmdp/internal/domain/repository"
 	"hmdp/pkg/utils"
 )
 
 type UserRepo struct {
-	//DB *gorm.DB
+	DB *gorm.DB
 }
 
-func NewUserRepo() repository.IUserRepo {
-	return &UserRepo{}
+func NewUserRepo(DB *gorm.DB) repository.IUserRepo {
+	return &UserRepo{DB}
 }
 
 // GetUser 用ID获取用户
@@ -36,8 +37,8 @@ func (repo *UserRepo) CreateUserWithPhone(phone string) (entity.User, error) {
 	return user, nil
 }
 
-func (repo *UserRepo) GetUserOrCreate(phone string) (entity.User, error) {
-	user := entity.CreateDefaultUser(phone)
-	err := DB.Where(entity.User{Phone: phone}).FirstOrCreate(&user).Error
-	return user, err
+func (repo *UserRepo) GetUserOrCreate(user *entity.User) error {
+	//user := entity.CreateDefaultUser(phone)
+	return DB.Where(entity.User{Phone: user.Phone}).FirstOrCreate(&user).Error
+
 }
