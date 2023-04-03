@@ -2,12 +2,20 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"hmdp/internal/app/assembler"
+	"hmdp/internal/app/services"
+	"hmdp/internal/infrastructure/mysql"
 	"hmdp/internal/interfaces/controller"
 )
 
 // RegisterBlogRoutes 注册用户相关的路由
 func RegisterBlogRoutes(r *gin.RouterGroup) {
-	blogCtrl := controller.NewBlogController()
+	// 手动依赖注入
+	blogCtrl := controller.NewBlogController(&services.BlogService{
+		BlogRepo: &mysql.BlogRepo{DB: mysql.DB},
+		BlogReq:  &assembler.BlogReq{},
+		BlogRsp:  &assembler.BlogRsp{},
+	})
 	// 发布博客
 	r.POST("")
 	// 点赞

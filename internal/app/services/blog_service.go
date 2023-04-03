@@ -17,14 +17,14 @@ func NewBlogService(blogRepo repository.IBlogRepo) IBlogService {
 }
 
 type BlogService struct {
-	blogRepo repository.IBlogRepo
+	BlogRepo repository.IBlogRepo
 	BlogReq  *assembler.BlogReq
 	BlogRsp  *assembler.BlogRsp
 }
 
 func (b *BlogService) Get(ctx *gin.Context, req *dto.BloGetReq) (*dto.BlogGetRsp, error) {
 	blog := b.BlogReq.D2EGet(req)
-	err := b.blogRepo.GetBlog(blog)
+	err := b.BlogRepo.GetBlog(blog)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +33,7 @@ func (b *BlogService) Get(ctx *gin.Context, req *dto.BloGetReq) (*dto.BlogGetRsp
 
 func (b *BlogService) Hot(ctx *gin.Context, req *dto.BlogHotReq) ([]*dto.BlogHotRsp, error) {
 	//blog := b.BlogReq.D2EGet(req)
-	blogs, err := b.blogRepo.GetBlogs(req.Current, 10)
+	blogs, err := b.BlogRepo.GetBlogs(req.Current, 10)
 	if err != nil {
 		return nil, err
 	}

@@ -44,8 +44,8 @@
 ```
 
 # 参考github
-https://github.com/victorsteven/food-app-server/tree/master/infrastructure
-
+- https://github.com/victorsteven/food-app-server/tree/master/infrastructure
+- https://github.com/jettjia/go-ddd
 # 相关概念介绍
 - Entity - is a class with an ID. In the case of relational DB it's usually a class that's mapped to a DB table with some primary key.
 - DTO (Data Transfer Object) - is a class that maps well on what you're sending over the network. E.g. if you exchange JSON or XML data, it usually has fields just enough to fill those requests/responses. Note, that it may have fewer or more fields than Entity.

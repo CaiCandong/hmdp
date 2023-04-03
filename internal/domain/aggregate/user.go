@@ -20,7 +20,7 @@ func NewUserAggregate(userRepo repository.IUserRepo) IUserAggregate {
 }
 
 type UserAggregate struct {
-	userRepo repository.IUserRepo
+	UserRepo repository.IUserRepo
 }
 
 func (agg *UserAggregate) SendCode(ctx context.Context, session sessions.Session, user *entity.User) error {
@@ -53,7 +53,7 @@ func (agg *UserAggregate) LoginByCode(ctx context.Context, session sessions.Sess
 		return fmt.Errorf("%v:验证码错误", user.Phone)
 	}
 	// 数据库查询
-	err := agg.userRepo.GetUserOrCreate(user)
+	err := agg.UserRepo.GetUserOrCreate(user)
 	if err != nil {
 		return err
 	}

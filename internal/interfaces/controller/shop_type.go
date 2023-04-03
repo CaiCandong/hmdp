@@ -9,7 +9,7 @@ import (
 )
 
 type ShopTypeController struct {
-	shopTypeService services.IShopTypeService
+	ShopTypeService services.IShopTypeService
 }
 
 func NewShopTypeController(shopTypeService services.IShopTypeService) *ShopTypeController {
@@ -17,7 +17,7 @@ func NewShopTypeController(shopTypeService services.IShopTypeService) *ShopTypeC
 }
 func (s *ShopTypeController) List(ctx *gin.Context) {
 	req := &dto.ShopTypeListReq{}
-	list, err := s.shopTypeService.List(ctx, req)
+	list, err := s.ShopTypeService.List(ctx, req)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, serializer.ParamErr("", err))
 		return
