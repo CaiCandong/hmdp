@@ -8,15 +8,15 @@ import (
 	"net/http"
 )
 
-type UserController struct {
+type UserHandler struct {
 	UserService services.IUserService
 }
 
-func NewUserController(UserService services.IUserService) *UserController {
-	return &UserController{UserService}
+func NewUserHandler(UserService services.IUserService) *UserHandler {
+	return &UserHandler{UserService}
 }
 
-func (u *UserController) SendCode(ctx *gin.Context) {
+func (u *UserHandler) SendCode(ctx *gin.Context) {
 	req := dto.UserSendCodeReq{}
 	// 参数解析
 	if err := ctx.ShouldBind(&req); err != nil {
@@ -32,8 +32,12 @@ func (u *UserController) SendCode(ctx *gin.Context) {
 	return
 }
 
-func (u *UserController) Info(ctx *gin.Context) {
+func (u *UserHandler) Info(ctx *gin.Context) {
 	req := &dto.UserInfoReq{}
+	// 参数解析
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, serializer.ParamErr("", err))
+	}
 	info, err := u.UserService.Info(ctx, req)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, serializer.ParamErr("", err))
@@ -42,7 +46,7 @@ func (u *UserController) Info(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, serializer.Success(info))
 }
 
-func (u *UserController) Login(ctx *gin.Context) {
+func (u *UserHandler) Login(ctx *gin.Context) {
 	req := &dto.UserLoginByCodeReq{}
 	// 参数绑定
 	if err := ctx.ShouldBind(req); err != nil {
@@ -58,9 +62,9 @@ func (u *UserController) Login(ctx *gin.Context) {
 	return
 }
 
-func (u *UserController) Me(ctx *gin.Context) {
-	req := &dto.UserInfoReq{}
-	info, err := u.UserService.Info(ctx, req)
+func (u *UserHandler) Me(ctx *gin.Context) {
+	req := &dto.UserMeReq{}
+	info, err := u.UserService.Me(ctx, req)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, serializer.ParamErr("", err))
 		return

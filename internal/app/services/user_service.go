@@ -14,6 +14,7 @@ type IUserService interface {
 	SendCode(ctx *gin.Context, req *dto.UserSendCodeReq) (*dto.UserSendCodeRsp, error)
 	LoginByCode(ctx *gin.Context, req *dto.UserLoginByCodeReq) (*dto.UserLoginByCodeRsp, error)
 	Info(ctx *gin.Context, req *dto.UserInfoReq) (*dto.UserInfoRsp, error)
+	Me(ctx *gin.Context, req *dto.UserMeReq) (*dto.UserMeRsp, error)
 }
 
 type UserService struct {
@@ -56,6 +57,14 @@ func (s *UserService) LoginByCode(ctx *gin.Context, req *dto.UserLoginByCodeReq)
 func (s *UserService) Info(ctx *gin.Context, req *dto.UserInfoReq) (*dto.UserInfoRsp, error) {
 	if user, ok := ctx.Get("user"); ok {
 		return s.UserRsp.E2DInfo(user.(*entity.User)), nil
+	}
+	return nil, fmt.Errorf("查看用户详细信息失败")
+}
+
+// Me 登录情况下才能访问,返回用户的基本信息
+func (s *UserService) Me(ctx *gin.Context, req *dto.UserMeReq) (*dto.UserMeRsp, error) {
+	if user, ok := ctx.Get("user"); ok {
+		return s.UserRsp.E2DMe(user.(*entity.User)), nil
 	}
 	return nil, fmt.Errorf("查看用户详细信息失败")
 }

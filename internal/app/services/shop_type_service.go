@@ -12,12 +12,12 @@ type IShopTypeService interface {
 }
 
 type ShowTypeService struct {
-	ShopTypeRepo repository.IShowType
+	ShopTypeRepo repository.IShopType
 	ShopTypeReq  *assembler.ShopTypeReq
 	ShopTypeRsp  *assembler.ShopTypeRsp
 }
 
-func NewShowTypeService(ShopTypeRepo repository.IShowType) IShopTypeService {
+func NewShowTypeService(ShopTypeRepo repository.IShopType) IShopTypeService {
 	return &ShowTypeService{
 		ShopTypeRepo,
 		&assembler.ShopTypeReq{},

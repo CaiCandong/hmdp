@@ -19,6 +19,6 @@ func (shop *ShopTypeRepo) GetShopTypeList() ([]*entity.ShowType, error) {
 	return showtypes, nil
 }
 
-func NewShopTypeRepo(DB *gorm.DB) repository.IShowType {
+func NewShopTypeRepo(DB *gorm.DB) repository.IShopType {
 	return &ShopTypeRepo{DB}
 }

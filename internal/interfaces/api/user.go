@@ -13,7 +13,7 @@ import (
 // RegisterUserRoutes 注册用户相关的路由
 func RegisterUserRoutes(r *gin.RouterGroup) {
 	// 手动依赖注入
-	userCtrl := controller.NewUserController(&services.UserService{
+	userCtrl := controller.NewUserHandler(&services.UserService{
 		UserAgg: &aggregate.UserAggregate{UserRepo: &mysql.UserRepo{DB: mysql.DB}},
 		UserReq: &assembler.UserReq{},
 		UserRsp: &assembler.UserRsp{},
@@ -36,7 +36,7 @@ func RegisterUserRoutes(r *gin.RouterGroup) {
 	//	r.DELETE("/logout", userCtrl.Logout)
 	//
 	//	// 查看用户详情
-	//	r.GET("/info/:id", userCtrl.Info)
+	r.GET("/info/:id", userCtrl.Info)
 	//
 	//	// 注册修改个人信息接口
 	//	r.PUT("/:id", userCtrl.Update)

@@ -37,7 +37,8 @@ func InitRoute() *gin.Engine {
 	api.RegisterShopTypeRoutes(router.Group("/shop-type"))
 	// 绑定博客相关的路由
 	api.RegisterBlogRoutes(router.Group("/blog"))
-
+	// 绑定商家相关的路由
+	api.RegisterShopRoutes(router.Group("/shop"))
 	return router
 }
 func main() {

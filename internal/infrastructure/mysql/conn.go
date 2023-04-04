@@ -68,6 +68,7 @@ func migration() {
 		&entity.User{},
 		&entity.ShowType{},
 		&entity.Blog{},
+		&entity.Shop{},
 	)
 }
 
