@@ -9,6 +9,7 @@ import (
 
 type IShopService interface {
 	OfType(ctx context.Context, req *dto.ShopOfTypeReq) (rsp []*dto.ShopOfTypeRsp, err error)
+	GetById(ctx context.Context, req *dto.ShopGetReq) (rsp *dto.ShopGetRsp, err error)
 }
 
 type ShopService struct {
@@ -23,4 +24,13 @@ func (s *ShopService) OfType(ctx context.Context, req *dto.ShopOfTypeReq) (rsp [
 		return nil, err
 	}
 	return s.ShopRsp.E2DOfType(shops), nil
+}
+
+func (s *ShopService) GetById(ctx context.Context, req *dto.ShopGetReq) (rsp *dto.ShopGetRsp, err error) {
+	shop := s.ShopReq.D2EGet(req)
+	err = s.ShopRepo.GetShopById(ctx, shop)
+	if err != nil {
+		return nil, err
+	}
+	return s.ShopRsp.E2DGetShop(shop), nil
 }

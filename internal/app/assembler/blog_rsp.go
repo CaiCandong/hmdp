@@ -35,7 +35,7 @@ func (s *BlogRsp) E2DHot(blogs []*entity.Blog) []*dto.BlogHotRsp {
 	for i, b := range blogs {
 		blogDTOs[i] = &dto.BlogHotRsp{
 			Id: b.ID,
-			//ShopId: b.ShopId,
+			//ShopId:   b.ShopId,
 			UserId:   b.UserId,
 			UserIcon: b.User.Icon,
 			UserName: b.User.NickName,
@@ -49,25 +49,29 @@ func (s *BlogRsp) E2DHot(blogs []*entity.Blog) []*dto.BlogHotRsp {
 	return blogDTOs
 }
 
-//
-//func (s *BlogReq) buildBlogs(blogs []entity.Blog) (blogDTOs []dto.BlogVO) {
-//	blogDTOs = make([]dto.BlogVO, len(blogs))
-//	for i := range blogs {
-//		blogDTOs[i] = s.buildBlog(blogs[i])
-//	}
-//	return
-//}
-//
-//func (s BlogReq) BuildBlogResponse(blog entity.Blog) Response {
-//	return Response{
-//		Success: true,
-//		Data:    s.buildBlog(blog),
-//	}
-//}
-//
-//func (s BlogReq) BuildBlogsResponse(blogs []entity.Blog) Response {
-//	return Response{
-//		Success: true,
-//		Data:    s.buildBlogs(blogs),
-//	}
-//}
+// E2DGetLike entity转换成dto
+func (s *BlogRsp) E2DGetLike(users []*entity.User) []*dto.BlogGetLikeRsp {
+	DTOs := make([]*dto.BlogGetLikeRsp, len(users))
+	for i, b := range users {
+		DTOs[i] = &dto.BlogGetLikeRsp{
+			UserId:   b.ID,
+			UserIcon: b.Icon,
+		}
+	}
+	return DTOs
+}
+
+// E2DGetBlogById entity转换成dto
+func (s *BlogRsp) E2DGetBlogById(blogs []*entity.Blog) []*dto.BlogGetByUseIdRsp {
+	DTOs := make([]*dto.BlogGetByUseIdRsp, len(blogs))
+	for i, b := range blogs {
+		DTOs[i] = &dto.BlogGetByUseIdRsp{
+			BlogId:   b.ID,
+			Images:   b.Images,
+			Title:    b.Title,
+			Likes:    b.Liked,
+			Comments: b.Comments,
+		}
+	}
+	return DTOs
+}

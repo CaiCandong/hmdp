@@ -20,3 +20,7 @@ func (s *ShopRepo) GetShopByType(ctx context.Context, shopTypeId uint, page int)
 		Find(&shops).Error
 	return shops, err
 }
+
+func (s *ShopRepo) GetShopById(ctx context.Context, shop *entity.Shop) error {
+	return s.DB.First(shop).Error
+}

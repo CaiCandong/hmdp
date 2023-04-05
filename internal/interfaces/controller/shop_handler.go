@@ -31,3 +31,18 @@ func (s *ShopHandler) OfType(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, serializer.Success(rsp))
 	return
 }
+
+func (s *ShopHandler) GetShop(ctx *gin.Context) {
+	req := &dto.ShopGetReq{}
+	if err := ctx.ShouldBindUri(req); err != nil {
+		ctx.JSON(http.StatusBadRequest, serializer.ParamErr("", err))
+		return
+	}
+	rsp, err := s.ShopService.GetById(ctx, req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, serializer.ParamErr("", err))
+		return
+	}
+	ctx.JSON(http.StatusOK, serializer.Success(rsp))
+	return
+}

@@ -10,6 +10,7 @@ import (
 type IBlogService interface {
 	Get(ctx *gin.Context, req *dto.BloGetReq) (*dto.BlogGetRsp, error)
 	Hot(ctx *gin.Context, req *dto.BlogHotReq) ([]*dto.BlogHotRsp, error)
+	GetBlogByUserId(ctx *gin.Context, req *dto.BlogGetByUseIdReq) ([]*dto.BlogGetByUseIdRsp, error)
 }
 
 func NewBlogService(blogRepo repository.IBlogRepo) IBlogService {
@@ -38,4 +39,12 @@ func (b *BlogService) Hot(ctx *gin.Context, req *dto.BlogHotReq) ([]*dto.BlogHot
 		return nil, err
 	}
 	return b.BlogRsp.E2DHot(blogs), nil
+}
+
+func (b *BlogService) GetBlogByUserId(ctx *gin.Context, req *dto.BlogGetByUseIdReq) ([]*dto.BlogGetByUseIdRsp, error) {
+	blogs, err := b.BlogRepo.GetBlogByUserId(req.UserId)
+	if err != nil {
+		return nil, err
+	}
+	return b.BlogRsp.E2DGetBlogById(blogs), nil
 }

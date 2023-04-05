@@ -69,6 +69,7 @@ func migration() {
 		&entity.ShowType{},
 		&entity.Blog{},
 		&entity.Shop{},
+		&entity.Voucher{},
 	)
 }
 

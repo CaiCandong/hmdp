@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"hmdp/internal/app/dto"
 	"hmdp/internal/app/services"
@@ -47,4 +48,21 @@ func (b *BlogController) Hot(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, serializer.Success(rsp))
+}
+
+// GetLikes 获取博客的点赞数量
+func (b *BlogController) GetLikes(ctx *gin.Context) {
+
+}
+
+// GetBlogsByUserId 根据用户id获取
+func (b *BlogController) GetBlogsByUserId(ctx *gin.Context) {
+	req := &dto.BlogGetByUseIdReq{}
+	session := sessions.Default(ctx)
+	req.UserId = session.Get("user_id").(uint)
+	blogs, err := b.blogService.GetBlogByUserId(ctx, req)
+	if err != nil {
+		return
+	}
+	ctx.JSON(http.StatusOK, serializer.Success(blogs))
 }

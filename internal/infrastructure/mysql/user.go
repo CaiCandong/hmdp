@@ -16,10 +16,8 @@ func NewUserRepo(DB *gorm.DB) repository.IUserRepo {
 }
 
 // GetUser 用ID获取用户
-func (repo *UserRepo) GetUser(ID any) (entity.User, error) {
-	var user entity.User
-	result := DB.First(&user, ID)
-	return user, result.Error
+func (repo *UserRepo) GetUser(user *entity.User) error {
+	return DB.First(&user).Error
 }
 
 // GetUserByPhone 用Phone获取用户

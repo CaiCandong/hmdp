@@ -2,9 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
-	"hmdp/internal/app/middleware"
 	"hmdp/internal/infrastructure/mysql"
 	"hmdp/internal/infrastructure/redis"
 	"hmdp/internal/interfaces/api"
@@ -21,28 +19,8 @@ func init() {
 	redis.InitRedisStore()
 }
 
-// DependenceInject 完成依赖注入
-// func DependenceInject() {
-//
-// }
-
-func InitRoute() *gin.Engine {
-	router := gin.Default()
-	router.Use(middleware.EnableCookieSession())
-	router.Use(middleware.CurrentUser(mysql.NewUserRepo(mysql.DB)))
-
-	// 绑定用户相关的路由
-	api.RegisterUserRoutes(router.Group("/user"))
-	// 绑定商铺类型相关的路由
-	api.RegisterShopTypeRoutes(router.Group("/shop-type"))
-	// 绑定博客相关的路由
-	api.RegisterBlogRoutes(router.Group("/blog"))
-	// 绑定商家相关的路由
-	api.RegisterShopRoutes(router.Group("/shop"))
-	return router
-}
 func main() {
-	r := InitRoute()
+	r := api.InitRoute()
 	err := r.Run()
 	if err != nil {
 		return

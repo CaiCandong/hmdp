@@ -2,7 +2,7 @@ package dto
 
 type (
 	ShopGetReq struct {
-		ID uint `json:"id" uri:"id" binding:"required"`
+		ID *uint `json:"id" uri:"id" binding:"required"`
 	}
 	ShopOfTypeReq struct {
 		TypeId  uint    `json:"typeId" form:"typeId" binding:"required"`
@@ -14,6 +14,12 @@ type (
 
 type (
 	ShopGetRsp struct {
+		Name     string `json:"name"`
+		AvgPrice uint64 `json:"avgPrice"`
+		Images   string `json:"images"`
+		Score    uint32 `json:"score"`
+		Comments uint32 `json:"comments"`
+		Address  string `json:"address"`
 	}
 	ShopOfTypeRsp struct {
 		ID       uint   `json:"id"`

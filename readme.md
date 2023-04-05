@@ -2,7 +2,7 @@
   该项目主要用于学习领域驱动开发和redis的入门使用,具体业务细节可以在b站搜`黑马点评`
 ## 前端服务启动
 ```shell
-    cd ./views/nginx-1.23.4
+    cd ./web/nginx-1.23.4
     ./nginx.exe
 ```
 
@@ -42,7 +42,16 @@
 
 
 ```
-
+# 领域驱动开发相关问题
+## 领域服务能否直接调用Repository层?
+  - domain service不应该直接调用repository
+  - https://cloud.tencent.com/developer/article/1803939
+## 领域对象entity能够直接调用Repository层？
+  - 领域模型不应该引用 repository
+  - domain service不应该直接调用repository
+## 数据对象
+- DTO: 在后端，它的存在形式是java对象(go里面的Struct)，也就是在controller里面定义的请求参数,在前端;它的存在形式通常是js里面的对象（也可以简单理解成json）
+- entity和po分离的原因：可以使得entity的存储与底层的数据库进行分离,可以无缝做到从gorm切换到其他orm框架
 # 参考github
 - https://github.com/victorsteven/food-app-server/tree/master/infrastructure
 - https://github.com/jettjia/go-ddd

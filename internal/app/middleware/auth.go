@@ -3,6 +3,7 @@ package middleware
 import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"hmdp/internal/domain/entity"
 	"hmdp/internal/domain/repository"
 )
@@ -13,7 +14,8 @@ func CurrentUser(repo repository.IUserRepo) gin.HandlerFunc {
 		session := sessions.Default(c)
 		uid := session.Get("user_id")
 		if uid != nil {
-			user, err := repo.GetUser(uid)
+			user := &entity.User{Model: gorm.Model{ID: uid.(uint)}}
+			err := repo.GetUser(user)
 			if err == nil {
 				c.Set("user", &user)
 			}

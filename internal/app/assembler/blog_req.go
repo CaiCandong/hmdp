@@ -19,3 +19,9 @@ func (b *BlogReq) D2EGet(d *dto.BloGetReq) *entity.Blog {
 		Model: gorm.Model{ID: uint(d.Id)},
 	}
 }
+
+func (b *BlogReq) D2EGetLike(d *dto.BlogGetLikeReq) *entity.Blog {
+	return &entity.Blog{
+		Model: gorm.Model{ID: uint(d.Id)},
+	}
+}

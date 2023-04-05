@@ -35,3 +35,9 @@ func (b *BlogRepo) GetBlogs(page, pageSize int) ([]*entity.Blog, error) {
 	//err := DB.Offset((page - 1) * pageSize).Limit(pageSize).Find(&blogs).Error
 	return blogs, err
 }
+
+func (b *BlogRepo) GetBlogByUserId(userId uint) ([]*entity.Blog, error) {
+	var blogs []*entity.Blog
+	err := b.DB.Where("user_id = ?", userId).Find(&blogs).Error
+	return blogs, err
+}

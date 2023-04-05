@@ -9,11 +9,13 @@ import (
 type ShopReq struct {
 }
 
-func (s *ShopReq) D2EGetRsp() *entity.Shop {
-	return nil
+func (s *ShopReq) D2EGet(e *dto.ShopGetReq) *entity.Shop {
+	return &entity.Shop{
+		Model: gorm.Model{ID: *e.ID},
+	}
 }
 
-func (s *ShopReq) D2EOfTypeRsp(e *dto.ShopOfTypeReq) *entity.ShowType {
+func (s *ShopReq) D2EOfType(e *dto.ShopOfTypeReq) *entity.ShowType {
 	return &entity.ShowType{
 		Model: gorm.Model{ID: e.TypeId},
 	}

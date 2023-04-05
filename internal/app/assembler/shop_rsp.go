@@ -25,3 +25,14 @@ func (s *ShopRsp) E2DOfType(es []*entity.Shop) []*dto.ShopOfTypeRsp {
 	}
 	return ret
 }
+
+func (s *ShopRsp) E2DGetShop(shop *entity.Shop) *dto.ShopGetRsp {
+	return &dto.ShopGetRsp{
+		Name:     shop.Name,
+		AvgPrice: shop.AvgPrice,
+		Images:   shop.Images,
+		Score:    shop.Score,
+		Comments: shop.Comments,
+		Address:  shop.Address,
+	}
+}
