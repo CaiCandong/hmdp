@@ -19,6 +19,14 @@ func NewBlogController(blogService services.IBlogService) *BlogController {
 
 }
 
+// Find
+// @Summary 获取单个文章
+// @Produce json
+// @Param id path int true "文章ID"
+// @Success 200 {object} Article "成功"
+// @Failure 400 {object} string "请求错误"
+// @Failure 500 {object} string "内部错误"
+// @Router /api/v1/articles/{id} [get]
 func (b *BlogController) Find(ctx *gin.Context) {
 	id := ctx.Param("id")
 	idx, err := strconv.Atoi(id)

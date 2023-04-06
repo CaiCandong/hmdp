@@ -5,6 +5,6 @@ import (
 	"hmdp/internal/domain/entity"
 )
 
-type IVoucherAgg interface {
+type IVoucherRepo interface {
 	GetByShopId(ctx context.Context, shopId uint) ([]*entity.Voucher, error)
 }

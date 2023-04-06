@@ -2,69 +2,66 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"hmdp/internal/app/assembler"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"hmdp/docs"
 	"hmdp/internal/app/middleware"
-	"hmdp/internal/app/services"
-	"hmdp/internal/domain/aggregate"
 	"hmdp/internal/infrastructure/mysql"
 	"hmdp/internal/interfaces/controller"
+	"hmdp/internal/interfaces/di"
 )
 
 func InitRoute() *gin.Engine {
 	router := gin.Default()
-	router.Use(middleware.EnableCookieSession())
-	router.Use(middleware.CurrentUser(mysql.NewUserRepo(mysql.DB)))
+	db := mysql.GetDB()
 
+	userRepo := di.InitUserRepo(db)
+
+	blogHandler := di.InitBlogHandler(db)
+	shopTypeCtrl := di.InitShopTypeHandler(db)
+	voucherCtrl := di.InitVoucherHandler(db)
+	shopHandler := di.InitShopHandler(db)
+	userCtrl := di.InitUserHandler(db)
+
+	router.Use(middleware.EnableCookieSession())
+	router.Use(middleware.CurrentUser(userRepo))
 	// 绑定用户相关的路由
-	RegisterUserRoutes(router.Group("/user"))
+	ginSwagger.WrapHandler(swaggerfiles.Handler,
+		ginSwagger.URL("http://localhost:8080/swagger/doc.json"),
+		ginSwagger.DefaultModelsExpandDepth(-1))
+	docs.SwaggerInfo.BasePath = "/api/v1"
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	RegisterUserRoutes(router.Group("/user"), userCtrl)
 	// 绑定商铺类型相关的路由
-	RegisterShopTypeRoutes(router.Group("/shop-type"))
+	RegisterShopTypeRoutes(router.Group("/shop-type"), shopTypeCtrl)
 	// 绑定博客相关的路由
-	RegisterBlogRoutes(router.Group("/blog"))
+	RegisterBlogRoutes(router.Group("/blog"), blogHandler)
 	// 绑定商家相关的路由
-	RegisterShopRoutes(router.Group("/shop"))
+	RegisterShopRoutes(router.Group("/shop"), shopHandler)
 	//绑定消费券相关的路由
-	RegisterVoucherRoutes(router.Group("/voucher"))
+	RegisterVoucherRoutes(router.Group("/voucher"), voucherCtrl)
 
 	return router
 }
 
 // RegisterVoucherRoutes 注册用户相关的路由
-func RegisterVoucherRoutes(r *gin.RouterGroup) {
-	// 手动依赖注入
-	voucherCtrl := controller.NewVoucherHandler(
-		&services.VoucherService{
-			VoucherAgg: &mysql.Voucher{DB: mysql.DB},
-			VoucherReq: &assembler.VoucherReq{},
-			VoucherRsp: &assembler.VoucherRsp{},
-		})
-	////
+func RegisterVoucherRoutes(r *gin.RouterGroup, voucherCtrl *controller.VoucherHandler) {
+
 	r.GET("/list/:shopId", voucherCtrl.ListByShopId)
 }
 
 // RegisterUserRoutes 注册用户相关的路由
-func RegisterUserRoutes(r *gin.RouterGroup) {
-	// 手动依赖注入
-	userCtrl := controller.NewUserHandler(&services.UserService{
-		UserAgg: &aggregate.UserAggregate{UserRepo: &mysql.UserRepo{DB: mysql.DB}},
-		UserReq: &assembler.UserReq{},
-		UserRsp: &assembler.UserRsp{},
-	})
-	//// 短信登录&注册
+func RegisterUserRoutes(r *gin.RouterGroup, userCtrl *controller.UserHandler) {
+	// 短信登录&注册
 	r.POST("/code", userCtrl.SendCode)
-	//
 	//// 注册用户登录接口
 	r.POST("/login", userCtrl.Login)
-	//
-	//// 注册用户注册接口
+	// 注册用户注册接口
 	//r.POST("/register", userCtrl.Register)
-	//
 	r.Use(middleware.AuthRequired())
-	//{
-	//	// 用户个人主页
+	// 用户个人主页
 	r.GET("/me", userCtrl.Me)
-	//
-	//	// 注册用户注销接口
+	// 注册用户注销接口
 	//	r.DELETE("/logout", userCtrl.Logout)
 	//
 	//	// 查看用户详情
@@ -88,26 +85,12 @@ func RegisterUploadRoutes(r *gin.RouterGroup) {
 }
 
 // RegisterShopTypeRoutes 注册用户相关的路由
-func RegisterShopTypeRoutes(r *gin.RouterGroup) {
-
-	shopTypeCtrl := controller.NewShopTypeController(&services.ShowTypeService{
-		ShopTypeRepo: &mysql.ShopTypeRepo{DB: mysql.DB},
-		ShopTypeReq:  &assembler.ShopTypeReq{},
-		ShopTypeRsp:  &assembler.ShopTypeRsp{},
-	})
-
+func RegisterShopTypeRoutes(r *gin.RouterGroup, shopTypeCtrl *controller.ShopTypeController) {
 	r.GET("/list", shopTypeCtrl.List)
 }
 
 // RegisterShopRoutes 注册用商户相关的路由
-func RegisterShopRoutes(r *gin.RouterGroup) {
-	shopHandler := controller.ShopHandler{
-		ShopService: &services.ShopService{
-			ShopRepo: &mysql.ShopRepo{DB: mysql.DB},
-			ShopReq:  assembler.ShopReq{},
-			ShopRsp:  assembler.ShopRsp{},
-		},
-	}
+func RegisterShopRoutes(r *gin.RouterGroup, shopHandler *controller.ShopHandler) {
 	// 发布博客
 	r.POST("")
 	// 点赞
@@ -135,13 +118,7 @@ func RegisterFollowerRoutes(r *gin.RouterGroup) {
 }
 
 // RegisterBlogRoutes 注册用户相关的路由
-func RegisterBlogRoutes(r *gin.RouterGroup) {
-	// 手动依赖注入
-	blogCtrl := controller.NewBlogController(&services.BlogService{
-		BlogRepo: &mysql.BlogRepo{DB: mysql.DB},
-		BlogReq:  &assembler.BlogReq{},
-		BlogRsp:  &assembler.BlogRsp{},
-	})
+func RegisterBlogRoutes(r *gin.RouterGroup, blogCtrl *controller.BlogController) {
 	// 发布博客
 	r.POST("")
 	// 点赞

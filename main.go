@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/spf13/viper"
-	"hmdp/internal/infrastructure/mysql"
 	"hmdp/internal/infrastructure/redis"
 	"hmdp/internal/interfaces/api"
 	"hmdp/pkg/logger"
@@ -15,7 +14,7 @@ func init() {
 		panic(fmt.Errorf("Fatal error config file: %w \n", err))
 	}
 	logger.InitializeLogger()
-	mysql.InitDB()
+	//mysql.InitDB()
 	redis.InitRedisStore()
 }
 

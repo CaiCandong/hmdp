@@ -32,6 +32,7 @@
 │   │   └── logging   # 日志相关代码
 │   └── interfaces    # 表示层
 │       ├── api       # RESTful API相关代码
+│       ├── di        # 依赖注入相关代码
 │       └── web       # Web页面相关代码
 └── pkg               # 公共代码和工具包
     ├── auth          # 身份验证相关代码
@@ -62,6 +63,8 @@
 - DTO (Data Transfer Object) - is a class that maps well on what you're sending over the network. E.g. if you exchange JSON or XML data, it usually has fields just enough to fill those requests/responses. Note, that it may have fewer or more fields than Entity.
 - VO (Value Object) is a class-value. E.g. you could create class like Grams or Money - it will contain some primitives (e.g. some double value) and it's possible to compare Value Objects using these primitives. They don't have a database ID. They help replacing primitives with more object-oriented classes related to our particular domain.
 - Domain Model contains all Entities and Value Objects. And some other types of classes depending on the classification you use.
+# 依赖注入
+  适用wire进行依赖注入
 # 项目业务介绍
 ## redis存储 session/cookies
 - 将用户的session保存在redis中,实现多个后端服务直接的会话共享

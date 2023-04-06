@@ -9,11 +9,11 @@ import (
 )
 
 type VoucherHandler struct {
-	VoucherService *services.VoucherService
+	VoucherService services.IVoucherService
 }
 
-func NewVoucherHandler(service *services.VoucherService) *VoucherHandler {
-	return &VoucherHandler{VoucherService: service}
+func NewVoucherHandler(VoucherService services.IVoucherService) *VoucherHandler {
+	return &VoucherHandler{VoucherService: VoucherService}
 }
 
 func (v *VoucherHandler) ListByShopId(ctx *gin.Context) {
@@ -28,5 +28,4 @@ func (v *VoucherHandler) ListByShopId(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, serializer.Success(rsp))
 	return
-
 }

@@ -4,16 +4,20 @@ import (
 	"context"
 	"gorm.io/gorm"
 	"hmdp/internal/domain/entity"
+	"hmdp/internal/domain/repository"
 )
 
 type ShopRepo struct {
-	DB *gorm.DB
+	db *gorm.DB
 }
 
+func NewShopRepo(db *gorm.DB) repository.IShopRepo {
+	return &ShopRepo{db: db}
+}
 func (s *ShopRepo) GetShopByType(ctx context.Context, shopTypeId uint, page int) ([]*entity.Shop, error) {
 	var shops []*entity.Shop
 	var pageSize int = 5
-	err := s.DB.Model(&entity.Shop{}).
+	err := s.db.Model(&entity.Shop{}).
 		Where("type_id = ? ", shopTypeId).
 		Offset((page - 1) * pageSize).
 		Limit(pageSize).
@@ -22,5 +26,5 @@ func (s *ShopRepo) GetShopByType(ctx context.Context, shopTypeId uint, page int)
 }
 
 func (s *ShopRepo) GetShopById(ctx context.Context, shop *entity.Shop) error {
-	return s.DB.First(shop).Error
+	return s.db.First(shop).Error
 }

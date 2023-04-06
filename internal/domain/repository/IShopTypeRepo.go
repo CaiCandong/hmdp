@@ -2,6 +2,6 @@ package repository
 
 import "hmdp/internal/domain/entity"
 
-type IShopType interface {
+type IShopTypeRepo interface {
 	GetShopTypeList() ([]*entity.ShowType, error)
 }

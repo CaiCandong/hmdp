@@ -7,12 +7,12 @@ import (
 )
 
 type BlogRepo struct {
-	DB *gorm.DB
+	db *gorm.DB
 }
 
 // GetBlog 用ID获取博客
-func (b *BlogRepo) GetBlog(blog *entity.Blog) error {
-	return DB.First(&blog, blog.ID).Error
+func (repo *BlogRepo) GetBlog(blog *entity.Blog) error {
+	return repo.db.First(&blog, blog.ID).Error
 }
 
 func NewBlogRepo(DB *gorm.DB) repository.IBlogRepo {
@@ -20,15 +20,15 @@ func NewBlogRepo(DB *gorm.DB) repository.IBlogRepo {
 }
 
 // GetBlogById 用ID获取博客
-func (b *BlogRepo) GetBlogById(blog *entity.Blog) error {
-	return DB.Where("id = ?", blog.ID).First(blog).Error
+func (repo *BlogRepo) GetBlogById(blog *entity.Blog) error {
+	return repo.db.Where("id = ?", blog.ID).First(blog).Error
 }
 
-func (b *BlogRepo) GetBlogs(page, pageSize int) ([]*entity.Blog, error) {
+func (repo *BlogRepo) GetBlogs(page, pageSize int) ([]*entity.Blog, error) {
 	// 使用Gorm的Offset和Limit函数进行分页
 	var blogs []*entity.Blog
 	//err := DB.Model(&entity.Blog{}).Find(&blogs).Error
-	err := DB.Model(entity.Blog{}).
+	err := repo.db.Model(entity.Blog{}).
 		Preload("User").Offset((page - 1) * pageSize).
 		Limit(pageSize).Find(&blogs).Error
 
@@ -36,8 +36,8 @@ func (b *BlogRepo) GetBlogs(page, pageSize int) ([]*entity.Blog, error) {
 	return blogs, err
 }
 
-func (b *BlogRepo) GetBlogByUserId(userId uint) ([]*entity.Blog, error) {
+func (repo *BlogRepo) GetBlogByUserId(userId uint) ([]*entity.Blog, error) {
 	var blogs []*entity.Blog
-	err := b.DB.Where("user_id = ?", userId).Find(&blogs).Error
+	err := repo.db.Where("user_id = ?", userId).Find(&blogs).Error
 	return blogs, err
 }

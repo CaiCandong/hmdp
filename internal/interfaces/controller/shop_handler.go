@@ -13,7 +13,6 @@ type ShopHandler struct {
 }
 
 func NewShopHandler(ShopService services.IShopService) *ShopHandler {
-	//return
 	return &ShopHandler{ShopService}
 }
 

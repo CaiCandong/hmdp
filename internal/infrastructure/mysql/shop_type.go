@@ -7,18 +7,18 @@ import (
 )
 
 type ShopTypeRepo struct {
-	DB *gorm.DB
+	db *gorm.DB
 }
 
-func (shop *ShopTypeRepo) GetShopTypeList() ([]*entity.ShowType, error) {
+func (repo *ShopTypeRepo) GetShopTypeList() ([]*entity.ShowType, error) {
 	var showtypes []*entity.ShowType
-	result := shop.DB.Find(&showtypes)
+	result := repo.db.Find(&showtypes)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 	return showtypes, nil
 }
 
-func NewShopTypeRepo(DB *gorm.DB) repository.IShopType {
+func NewShopTypeRepo(DB *gorm.DB) repository.IShopTypeRepo {
 	return &ShopTypeRepo{DB}
 }

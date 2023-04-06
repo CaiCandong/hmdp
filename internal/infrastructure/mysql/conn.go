@@ -16,7 +16,7 @@ import (
 var DB *gorm.DB
 
 // InitDB  在中间件中初始化mysql链接
-func InitDB() *gorm.DB {
+func InitDB() {
 
 	// 从配置文件中获取 MySQL 相关信息
 	host := viper.GetString("mysql.host")
@@ -59,9 +59,15 @@ func InitDB() *gorm.DB {
 	DB = db
 
 	migration()
-	return DB
 }
 
+// GetDB 单例模式
+func GetDB() *gorm.DB {
+	if DB == nil {
+		InitDB()
+	}
+	return DB
+}
 func migration() {
 	// 自动迁移模式
 	_ = DB.AutoMigrate(
@@ -72,11 +78,3 @@ func migration() {
 		&entity.Voucher{},
 	)
 }
-
-// GetDB 单例模式建立数据库连接
-//func GetDB() *gorm.DB {
-//	if globalDB == nil {
-//		InitDB()
-//	}
-//	return globalDB
-//}
