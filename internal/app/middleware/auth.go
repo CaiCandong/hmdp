@@ -17,7 +17,7 @@ func CurrentUser(repo repository.IUserRepo) gin.HandlerFunc {
 			user := &entity.User{Model: gorm.Model{ID: uid.(uint)}}
 			err := repo.GetUser(user)
 			if err == nil {
-				c.Set("user", &user)
+				c.Set("user", user)
 			}
 		}
 		c.Next()
@@ -27,7 +27,8 @@ func CurrentUser(repo repository.IUserRepo) gin.HandlerFunc {
 func AuthRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if user, ok := c.Get("user"); ok && user != nil {
-			if _, ok := user.(*entity.User); ok {
+			_, ok := user.(*entity.User)
+			if ok {
 				c.Next()
 				return
 			}
