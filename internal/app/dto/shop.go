@@ -10,6 +10,17 @@ type (
 		X       float32 `json:"x" form:"x"`
 		Y       float32 `json:"y" form:"y"`
 	}
+	ShopUpdateReq struct {
+		Area      string `json:"area"`      //店铺区域
+		OpenHours string `json:"openHours"` //店铺营业时间
+		Sold      uint32 `json:"sold"`      //店铺销量
+		Address   string `json:"address"`   //店铺地址
+		AvgPrice  uint64 `json:"avgPrice"`  //店铺人均价格
+		Score     uint32 `json:"score"`     //店铺评分
+		Name      string `json:"name"`      //店铺名称
+		TypeId    uint64 `json:"typeId"`    //店铺类型ID
+		ID        uint   `json:"id"`        //店铺ID
+	}
 )
 
 type (
@@ -31,6 +42,9 @@ type (
 		Distance int    `json:"distance"`
 		AvgPrice uint64 `json:"avgPrice"`
 		Address  string `json:"address"`
+	}
+	ShopUpdateRsp struct {
+		Success bool `json:"success"` //是否成功
 	}
 )
 

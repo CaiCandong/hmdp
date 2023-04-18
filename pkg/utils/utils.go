@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	"math/rand"
 	"regexp"
 	"strings"
@@ -36,4 +38,20 @@ func RandStringBytes(n int) string {
 		b[i] = letterBytes[rand.Intn(len(letterBytes))]
 	}
 	return string(b)
+}
+
+func UUID() string {
+	u := uuid.New()
+	return u.String()
+}
+
+// ToJSON 辅助函数 - 将结构体序列化为 JSON 字符串
+func ToJSON(v interface{}) string {
+	b, _ := json.Marshal(v)
+	return string(b)
+}
+
+// FromJSON 辅助函数 - 将 Redis 响应解码为结构体
+func FromJSON(str string, v interface{}) error {
+	return json.Unmarshal([]byte(str), v)
 }

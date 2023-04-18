@@ -36,3 +36,6 @@ func (s *ShopRsp) E2DGetShop(shop *entity.Shop) *dto.ShopGetRsp {
 		Address:  shop.Address,
 	}
 }
+func (s *ShopRsp) E2DUpdate(shop *entity.Shop) *dto.ShopUpdateRsp {
+	return &dto.ShopUpdateRsp{Success: true}
+}

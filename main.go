@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/spf13/viper"
-	"hmdp/internal/infrastructure/redis"
+	"hmdp/internal/infrastructure/cache"
 	"hmdp/internal/interfaces/api"
 	"hmdp/pkg/logger"
 )
@@ -15,7 +15,7 @@ func init() {
 	}
 	logger.InitializeLogger()
 	//mysql.InitDB()
-	redis.InitRedisStore()
+	cache.InitRedisStore()
 }
 
 func main() {

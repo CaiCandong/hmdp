@@ -9,6 +9,12 @@ import (
 type VoucherRsp struct {
 }
 
+func (v *VoucherRsp) E2DVoucherSecKill(e *entity.VoucherOrder) *dto.VoucherSecKillRsp {
+	return &dto.VoucherSecKillRsp{
+		OrderId: e.ID,
+	}
+}
+
 func (v *VoucherRsp) E2DVoucherList(es []*entity.Voucher) []*dto.VoucherListRsp {
 	ret := make([]*dto.VoucherListRsp, len(es))
 	for i, e := range es {
@@ -26,4 +32,10 @@ func (v *VoucherRsp) E2DVoucherList(es []*entity.Voucher) []*dto.VoucherListRsp 
 		}
 	}
 	return ret
+}
+
+func (v *VoucherRsp) E2DVoucherCreate(e *entity.Voucher, s *entity.SeckillVoucher) *dto.VoucherCreateRsp {
+	return &dto.VoucherCreateRsp{
+		Status: 1,
+	}
 }

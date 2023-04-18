@@ -5,6 +5,7 @@ import (
 	"hmdp/internal/app/assembler"
 	"hmdp/internal/app/dto"
 	"hmdp/internal/domain/repository"
+	"hmdp/internal/infrastructure/cache"
 )
 
 type IShopTypeService interface {
@@ -27,9 +28,14 @@ func NewShowTypeService(ShopTypeRepo repository.IShopTypeRepo) IShopTypeService 
 type ShopTypeConfiguration func(os *ShowTypeService) error
 
 func (s *ShowTypeService) List(ctx *gin.Context, req *dto.ShopTypeListReq) ([]*dto.ShopTypeListRsp, error) {
-	list, err := s.ShopTypeRepo.GetShopTypeList()
+	list, err := cache.GetShopType(ctx)
+	if err == nil {
+		return s.ShopTypeRsp.E2DShopTypeInfo(list), nil
+	}
+	list, err = s.ShopTypeRepo.GetShopTypeList()
 	if err != nil {
 		return nil, err
 	}
-	return s.ShopTypeRsp.E2DShopTypeInfo(list), nil
+	err = cache.SaveShopType(ctx, list)
+	return s.ShopTypeRsp.E2DShopTypeInfo(list), err
 }

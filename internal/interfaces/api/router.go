@@ -25,6 +25,7 @@ func InitRoute() *gin.Engine {
 
 	router.Use(middleware.EnableCookieSession())
 	router.Use(middleware.CurrentUser(userRepo))
+	router.Use(middleware.CurrentUserByToken())
 	// 绑定用户相关的路由
 	ginSwagger.WrapHandler(swaggerfiles.Handler,
 		ginSwagger.URL("http://localhost:8080/swagger/doc.json"),
@@ -39,15 +40,18 @@ func InitRoute() *gin.Engine {
 	// 绑定商家相关的路由
 	RegisterShopRoutes(router.Group("/shop"), shopHandler)
 	//绑定消费券相关的路由
-	RegisterVoucherRoutes(router.Group("/voucher"), voucherCtrl)
+	RegisterVoucherRoutes(router.Group(""), voucherCtrl)
 
 	return router
 }
 
-// RegisterVoucherRoutes 注册用户相关的路由
+// RegisterVoucherRoutes 注册消费券相关的路由
 func RegisterVoucherRoutes(r *gin.RouterGroup, voucherCtrl *controller.VoucherHandler) {
 
-	r.GET("/list/:shopId", voucherCtrl.ListByShopId)
+	r.GET("voucher/list/:shopId", voucherCtrl.ListByShopId)
+	r.POST("voucher-order/seckill/:id", voucherCtrl.SecKill)
+	r.POST("voucher/create", voucherCtrl.Create)
+
 }
 
 // RegisterUserRoutes 注册用户相关的路由
@@ -91,9 +95,8 @@ func RegisterShopTypeRoutes(r *gin.RouterGroup, shopTypeCtrl *controller.ShopTyp
 
 // RegisterShopRoutes 注册用商户相关的路由
 func RegisterShopRoutes(r *gin.RouterGroup, shopHandler *controller.ShopHandler) {
-	// 发布博客
+
 	r.POST("")
-	// 点赞
 	r.PUT("/like/:id")
 	// 获取与用户相关的博客
 	r.GET("/of/type", shopHandler.OfType)
@@ -101,6 +104,7 @@ func RegisterShopRoutes(r *gin.RouterGroup, shopHandler *controller.ShopHandler)
 	r.GET("/like/:id")
 	// 当前热榜
 	r.GET("/hot")
+	r.PUT("/:id", shopHandler.Update)
 	r.GET("/:id", shopHandler.GetShop)
 	r.GET("/of/follow")
 

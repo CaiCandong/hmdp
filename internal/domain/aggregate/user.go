@@ -6,6 +6,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"hmdp/internal/domain/entity"
 	"hmdp/internal/domain/repository"
+	"hmdp/internal/infrastructure/cache"
 	"hmdp/pkg/utils"
 )
 
@@ -35,8 +36,10 @@ func (agg *UserAggregate) SendCode(ctx context.Context, session sessions.Session
 		return err
 	}
 	// 保存验证码
-	session.Set("code", code)
-	if err := session.Save(); err != nil {
+	key := fmt.Sprintf("code:%v", user.Phone)
+	err := cache.RedisStore.Set(ctx, key, code, 0).Err()
+	//session.Set("code", code)
+	if err != nil {
 		return err
 	}
 	return nil
@@ -48,18 +51,27 @@ func (agg *UserAggregate) LoginByCode(ctx context.Context, session sessions.Sess
 		return fmt.Errorf("%v:手机号码格式错误", user.Phone)
 	}
 	// 校验验证码是否一致
-	originalCode := session.Get("code")
-	if code, ok := originalCode.(string); !ok || code != originalCode {
-		return fmt.Errorf("%v:验证码错误", user.Phone)
-	}
-	// 数据库查询
-	err := agg.UserRepo.GetUserOrCreate(user)
+	originalCode, err := cache.RedisStore.Get(ctx, fmt.Sprintf("code:%v", user.Phone)).Result()
 	if err != nil {
 		return err
 	}
+	//
+	//originalCode := session.Get("code")
+	if code != originalCode {
+		return fmt.Errorf("%v:验证码错误", user.Phone)
+	}
+	// 数据库查询
+	err = agg.UserRepo.GetUserOrCreate(user)
+	if err != nil {
+		return err
+	}
+	// 将用户的信息存放到redis中
+	token := user.GenToken()
+	err = cache.SaveUser(ctx, token, user)
+
 	// 会话保持
-	session.Set("user_id", user.ID)
-	err = session.Save()
+	//session.Set("user_id", user.ID)
+	//err = session.Save()
 	if err != nil {
 		return err
 	}

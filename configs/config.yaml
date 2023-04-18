@@ -5,6 +5,7 @@ server:
   port: 8080
   mode: 'debug'
   session_secret: "setOnProducation"
+  session_expire: 3600
 # 日志配置
 log:
   level: 'debug'

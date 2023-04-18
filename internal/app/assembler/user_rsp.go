@@ -18,7 +18,7 @@ func (req *UserRsp) E2DSendCode() *dto.UserSendCodeRsp {
 }
 
 func (req *UserRsp) E2DLoginByCode(e *entity.User) *dto.UserLoginByCodeRsp {
-	return &dto.UserLoginByCodeRsp{ID: e.ID, NickName: e.NickName, Icon: e.Icon}
+	return &dto.UserLoginByCodeRsp{ID: e.ID, NickName: e.NickName, Icon: e.Icon, Token: e.Token}
 }
 
 func (req *UserRsp) E2DMe(e *entity.User) *dto.UserMeRsp {

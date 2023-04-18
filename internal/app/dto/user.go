@@ -24,6 +24,7 @@ type (
 		ID       uint   `json:"id"`
 		NickName string `json:"nickName"`
 		Icon     string `json:"icon"`
+		Token    string `json:"token"`
 	}
 	UserMeRsp struct {
 		ID       uint   `json:"id"`

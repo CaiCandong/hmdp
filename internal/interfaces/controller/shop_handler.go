@@ -39,6 +39,21 @@ func (s *ShopHandler) GetShop(ctx *gin.Context) {
 	}
 	rsp, err := s.ShopService.GetById(ctx, req)
 	if err != nil {
+		ctx.JSON(http.StatusOK, serializer.ParamErr("", err))
+		return
+	}
+	ctx.JSON(http.StatusOK, serializer.Success(rsp))
+	return
+}
+
+func (s *ShopHandler) Update(ctx *gin.Context) {
+	req := &dto.ShopUpdateReq{}
+	if err := ctx.ShouldBind(req); err != nil {
+		ctx.JSON(http.StatusBadRequest, serializer.ParamErr("", err))
+		return
+	}
+	rsp, err := s.ShopService.UpdateById(ctx, req)
+	if err != nil {
 		ctx.JSON(http.StatusBadRequest, serializer.ParamErr("", err))
 		return
 	}

@@ -14,6 +14,7 @@ type User struct {
 	Password string `gorm:"column:password;type:varchar(128);"`
 	NickName string `gorm:"column:nick_name;type:varchar(32);" json:"nick_name"`
 	Icon     string `gorm:"column:icon;type:varchar(255)" json:"icon"`
+	Token    string `gorm:"-"`
 }
 
 func (u *User) TableName() string {
@@ -39,4 +40,9 @@ func (u *User) SendCode(code string) error {
 	//TODO:调用运营商SDK下发验证码
 	logger.Logger.Info(fmt.Sprintf("phone:%v;code:%v", u.Phone, code))
 	return nil
+}
+
+func (u *User) GenToken() string {
+	u.Token = utils.UUID()
+	return u.Token
 }

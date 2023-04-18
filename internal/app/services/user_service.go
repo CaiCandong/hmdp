@@ -35,6 +35,7 @@ func NewUserService(aggr aggregate.IUserAggregate) IUserService {
 func (s *UserService) SendCode(ctx *gin.Context, req *dto.UserSendCodeReq) (*dto.UserSendCodeRsp, error) {
 	// dto2entity
 	user := s.UserReq.D2ESendCode(req)
+
 	session := sessions.Default(ctx)
 	err := s.UserAgg.SendCode(ctx, session, user)
 	if err != nil {

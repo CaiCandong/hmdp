@@ -28,3 +28,7 @@ func (s *ShopRepo) GetShopByType(ctx context.Context, shopTypeId uint, page int)
 func (s *ShopRepo) GetShopById(ctx context.Context, shop *entity.Shop) error {
 	return s.db.First(shop).Error
 }
+
+func (s *ShopRepo) UpdateById(ctx context.Context, shop *entity.Shop) error {
+	return s.db.Updates(shop).Error
+}
