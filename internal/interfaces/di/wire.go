@@ -14,6 +14,18 @@ import (
 	"hmdp/internal/interfaces/controller"
 )
 
+func InitHandlers(db *gorm.DB) *controller.Handlers {
+	wire.Build(
+		controller.NewHandlers,
+		InitShopHandler,
+		InitUserHandler,
+		InitBlogHandler,
+		InitVoucherHandler,
+		InitShopTypeHandler,
+	)
+	return &controller.Handlers{}
+}
+
 func InitUserRepo(db *gorm.DB) repository.IUserRepo {
 	wire.Build(mysql.NewUserRepo)
 	return nil
@@ -23,10 +35,12 @@ func InitShopHandler(db *gorm.DB) *controller.ShopHandler {
 	wire.Build(controller.NewShopHandler, services.NewShopService, mysql.NewShopRepo)
 	return nil
 }
+
 func InitUserHandler(db *gorm.DB) *controller.UserHandler {
 	wire.Build(controller.NewUserHandler, services.NewUserService, aggregate.NewUserAggregate, mysql.NewUserRepo)
 	return nil
 }
+
 func InitBlogHandler(db *gorm.DB) *controller.BlogController {
 	wire.Build(controller.NewBlogController, services.NewBlogService, mysql.NewBlogRepo)
 	return nil

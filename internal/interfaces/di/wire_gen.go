@@ -17,6 +17,16 @@ import (
 
 // Injectors from wire.go:
 
+func InitHandlers(db *gorm.DB) *controller.Handlers {
+	userHandler := InitUserHandler(db)
+	shopHandler := InitShopHandler(db)
+	blogController := InitBlogHandler(db)
+	voucherHandler := InitVoucherHandler(db)
+	shopTypeController := InitShopTypeHandler(db)
+	handlers := controller.NewHandlers(userHandler, shopHandler, blogController, voucherHandler, shopTypeController)
+	return handlers
+}
+
 func InitUserRepo(db *gorm.DB) repository.IUserRepo {
 	iUserRepo := mysql.NewUserRepo(db)
 	return iUserRepo

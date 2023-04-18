@@ -2,11 +2,13 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"github.com/google/wire"
 	"hmdp/internal/app/assembler"
 	"hmdp/internal/app/dto"
 	"hmdp/internal/domain/repository"
 	"hmdp/internal/infrastructure/cache"
+	"time"
 )
 
 type IShopService interface {
@@ -40,19 +42,54 @@ func (s *ShopService) OfType(ctx context.Context, req *dto.ShopOfTypeReq) (rsp [
 	return s.ShopRsp.E2DOfType(shops), nil
 }
 
+//func (s *ShopService) GetById(ctx context.Context, req *dto.ShopGetReq) (rsp *dto.ShopGetRsp, err error) {
+//	shop := s.ShopReq.D2EGet(req)
+//
+//	err = cache.GetShopById(ctx, shop)
+//	// 缓存命中
+//	if err == nil {
+//		return s.ShopRsp.E2DGetShop(shop), nil
+//	}
+//	// 命中空值
+//	if err == cache.ErrEmptyRecord {
+//		return nil, err
+//	}
+//	// 缓存未命中
+//	err = s.ShopRepo.GetShopById(ctx, shop)
+//	if err != nil {
+//		// 缓存穿透
+//		cache.SaveNotFind(ctx, shop)
+//		return nil, err
+//	}
+//	// 缓存数据
+//	err = cache.SaveShopById(ctx, shop)
+//	return s.ShopRsp.E2DGetShop(shop), nil
+//}
+
+// GetById 针对缓存击穿的优化
 func (s *ShopService) GetById(ctx context.Context, req *dto.ShopGetReq) (rsp *dto.ShopGetRsp, err error) {
 	shop := s.ShopReq.D2EGet(req)
 
 	err = cache.GetShopById(ctx, shop)
-	// 缓存命中
+	// cache hit
 	if err == nil {
 		return s.ShopRsp.E2DGetShop(shop), nil
 	}
-	// 命中空值
-	if err == cache.ErrEmptyRecord {
-		return nil, err
+	// 缓存未命中
+	lock, err := cache.Lock(ctx, fmt.Sprintf("Lock:%v", shop.ID))
+	defer cache.Unlock(ctx, fmt.Sprintf("Lock:%v", shop.ID))
+	for lock == false {
+		// 等待100毫秒
+		time.Sleep(time.Second)
+		// 等待锁释放
+		err = cache.GetShopById(ctx, shop)
+		if err == nil {
+			return s.ShopRsp.E2DGetShop(shop), nil
+		}
+		lock, err = cache.Lock(ctx, fmt.Sprintf("Lock:%v", shop.ID))
 	}
 	// 缓存未命中
+	time.Sleep(5 * time.Second)
 	err = s.ShopRepo.GetShopById(ctx, shop)
 	if err != nil {
 		// 缓存穿透
@@ -61,6 +98,7 @@ func (s *ShopService) GetById(ctx context.Context, req *dto.ShopGetReq) (rsp *dt
 	}
 	// 缓存数据
 	err = cache.SaveShopById(ctx, shop)
+
 	return s.ShopRsp.E2DGetShop(shop), nil
 }
 
@@ -72,9 +110,6 @@ func (s *ShopService) UpdateById(ctx context.Context, req *dto.ShopUpdateReq) (r
 	}
 	// 删除缓存
 	err = cache.DeleteShopById(ctx, shop)
-	if err != nil {
-		return nil, err
-	}
 	if err != nil {
 		return nil, err
 	}
