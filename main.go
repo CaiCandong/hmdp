@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/spf13/viper"
-	"hmdp/internal/infrastructure/cache"
-	"hmdp/internal/interfaces/api"
+	"hmdp/internal/cache"
+	"hmdp/internal/router"
 	"hmdp/pkg/logger"
 )
 
@@ -14,12 +14,11 @@ func init() {
 		panic(fmt.Errorf("Fatal error config file: %w \n", err))
 	}
 	logger.InitializeLogger()
-	//mysql.InitDB()
 	cache.InitRedisStore()
 }
 
 func main() {
-	r := api.InitRoute()
+	r := router.InitRoute()
 	err := r.Run()
 	if err != nil {
 		return
