@@ -11,6 +11,16 @@ import (
 	"hmdp/pkg/utils"
 )
 
+type IUserService interface {
+	SendCode(ctx *gin.Context, phone string) (any, error) // 发送验证码
+	LoginByCode(ctx *gin.Context, req *dto.LoginByCodeReq) (*dto.UserLoginByCodeRsp, error)
+	Me(ctx *gin.Context) (*dto.UserMeRsp, error)
+	Info(ctx *gin.Context, req *dto.UserInfoReq) (*dto.UserInfoRsp, error)
+	FindUserById(ctx *gin.Context, req *dto.FindUserByIdReq) (*dto.FindUserByIdRsp, error)
+	FindUserByPhone(ctx *gin.Context, phone string) (u *model.User, err error)
+	IsFollowed(ctx *gin.Context, req *dto.IsFollowedReq) (*dto.IsFollowedRsp, error)
+}
+
 type UserService struct {
 	DB  *gorm.DB
 	Req *assembler.UserReq
@@ -42,11 +52,16 @@ func (s *UserService) SendCode(ctx *gin.Context, phone string) (any, error) {
 	return nil, err
 }
 
-func (s *UserService) Info(ctx *gin.Context, id uint) (interface{}, error) {
-	return nil, nil
+func (s *UserService) Info(ctx *gin.Context, req *dto.UserInfoReq) (*dto.UserInfoRsp, error) {
+	var userinfo model.UserInfo
+	err := s.DB.Preload("User").Where("user_id = ?", req.ID).First(&userinfo).Error
+	if err == nil && userinfo.User != nil {
+		return s.Rsp.E2DInfo(&userinfo), nil
+	}
+	return nil, err
 }
 
-func (s *UserService) LoginByCode(ctx *gin.Context, req *dto.UserLoginByCodeReq) (*dto.UserLoginByCodeRsp, error) {
+func (s *UserService) LoginByCode(ctx *gin.Context, req *dto.LoginByCodeReq) (*dto.UserLoginByCodeRsp, error) {
 	//校验手机号码
 	if !utils.VerifyMobileFormat(req.Phone) {
 		return nil, fmt.Errorf("%v:手机号码格式错误", req.Phone)
@@ -77,23 +92,46 @@ func (s *UserService) LoginByCode(ctx *gin.Context, req *dto.UserLoginByCodeReq)
 	return s.Rsp.E2DLoginByCode(&user), err
 }
 
-func (s *UserService) Me(ctx *gin.Context) (interface{}, error) {
-	return nil, nil
+func (s *UserService) Me(ctx *gin.Context) (*dto.UserMeRsp, error) {
+	user := ctx.MustGet("user").(*model.User)
+	return s.Rsp.E2DMe(user), nil
 }
-
-//
-//func (s *UserService) UpdateUser(ctx *gin.Context, id uint, data interface{}) (interface{}, error) {
-//
-//}
-
-func (s *UserService) FindUserById(ctx *gin.Context, id uint) (*model.User, error) {
+func (s *UserService) FollowUser(ctx *gin.Context, req *dto.FollowUserReq) (*dto.FollowUserRsp, error) {
+	follow := model.Follow{
+		UserId:   req.UserId,
+		FollowId: req.ID,
+	}
+	if *req.Follow { //关注
+		err := s.DB.Where("user_id = ? AND follow_id = ?", follow.UserId, follow.FollowId).FirstOrCreate(&follow).Error
+		if err != nil {
+			return nil, err
+		}
+		return &dto.FollowUserRsp{}, nil
+	}
+	// 取消关注
+	err := s.DB.Where("user_id = ? AND follow_id = ?", follow.UserId, follow.FollowId).Delete(&follow).Error
+	if err != nil {
+		return nil, err
+	}
+	return &dto.FollowUserRsp{}, nil
+}
+func (s *UserService) FindUserById(ctx *gin.Context, req *dto.FindUserByIdReq) (*dto.FindUserByIdRsp, error) {
 	var user model.User
-	err := s.DB.Where("id = ?", id).First(&user).Error
-	return &user, err
+	err := s.DB.Where("id = ?", req.ID).First(&user).Error
+	return s.Rsp.E2DFindUserById(&user), err
 }
 
 func (s *UserService) FindUserByPhone(ctx *gin.Context, phone string) (u *model.User, err error) {
 	var user model.User
 	err = s.DB.Where("phone = ?", phone).First(&user).Error
 	return &user, err
+}
+
+func (s *UserService) IsFollowed(ctx *gin.Context, req *dto.IsFollowedReq) (*dto.IsFollowedRsp, error) {
+	var follow model.Follow
+	err := s.DB.Where("user_id = ? AND follow_id = ?", req.CurrentUserId, req.FollowUserId).First(&follow).Error
+	if err == gorm.ErrRecordNotFound {
+		return &dto.IsFollowedRsp{Followed: false}, nil
+	}
+	return &dto.IsFollowedRsp{Followed: true}, nil
 }

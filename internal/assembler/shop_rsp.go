@@ -36,6 +36,18 @@ func (s *ShopRsp) E2DFindShopById(shop *model.Shop) *dto.FindShopByIdRsp {
 		Address:  shop.Address,
 	}
 }
+
 func (s *ShopRsp) E2DUpdateShopById(shop *model.Shop) *dto.UpdateShopByIdRsp {
 	return &dto.UpdateShopByIdRsp{Success: true}
+}
+
+func (s *ShopRsp) E2DListShopsByName(es []*model.Shop) []*dto.ListShopsByNameRsp {
+	ret := make([]*dto.ListShopsByNameRsp, len(es))
+	for i, e := range es {
+		ret[i] = &dto.ListShopsByNameRsp{
+			Name: e.Name,
+			Area: e.Area,
+		}
+	}
+	return ret
 }

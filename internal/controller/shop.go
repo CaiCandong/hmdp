@@ -30,7 +30,20 @@ func (handler *ShopHandler) OfType(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, serializer.Success(rsp))
 	return
 }
-
+func (handler *ShopHandler) ListShopsByName(ctx *gin.Context) {
+	req := &dto.ListShopsByNameReq{}
+	if err := ctx.ShouldBind(req); err != nil {
+		ctx.JSON(http.StatusBadRequest, serializer.ParamErr("", err))
+		return
+	}
+	rsp, err := handler.svc.ListShopsByName(ctx, req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, serializer.ParamErr("", err))
+		return
+	}
+	ctx.JSON(http.StatusOK, serializer.Success(rsp))
+	return
+}
 func (handler *ShopHandler) FindShopById(ctx *gin.Context) {
 	req := &dto.FindShopByIdReq{}
 	if err := ctx.ShouldBindUri(req); err != nil {

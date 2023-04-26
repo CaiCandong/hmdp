@@ -45,6 +45,16 @@ func (s *ShopService) ListShopsByType(ctx *gin.Context, req *dto.ListShopsByType
 	return s.Rsp.E2DListShopsByType(shops), err
 }
 
+// ListShopsByName 根据名称查找商店
+func (s *ShopService) ListShopsByName(ctx *gin.Context, req *dto.ListShopsByNameReq) ([]*dto.ListShopsByNameRsp, error) {
+	var shops []*model.Shop
+	err := s.DB.Where("name like ?", "%"+req.Name+"%").Find(&shops).Error
+	if err != nil {
+		return nil, err
+	}
+	return s.Rsp.E2DListShopsByName(shops), err
+}
+
 // UpdateShopById 更新商店信息
 func (s *ShopService) UpdateShopById(ctx *gin.Context, req *dto.UpdateShopByIdReq) (*dto.UpdateShopByIdRsp, error) {
 	var shop model.Shop

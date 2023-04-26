@@ -17,7 +17,7 @@ func (req *UserReq) D2ESendCode(d *dto.UserSendCodeReq) *model.User {
 	return &model.User{Phone: d.Phone}
 }
 
-func (req *UserReq) D2ELoginByCode(d *dto.UserLoginByCodeReq) *model.User {
+func (req *UserReq) D2ELoginByCode(d *dto.LoginByCodeReq) *model.User {
 	return &model.User{Phone: d.Phone}
 }
 

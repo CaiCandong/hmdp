@@ -23,6 +23,9 @@ type (
 		TypeId    uint64 `json:"typeId"`    //店铺类型ID
 		ID        uint   `json:"id"`        //店铺ID
 	}
+	ListShopsByNameReq struct { //查询所有店铺
+		Name string `json:"name" form:"name"`
+	}
 )
 
 type (
@@ -47,6 +50,10 @@ type (
 	}
 	UpdateShopByIdRsp struct {
 		Success bool `json:"success"` //是否成功
+	}
+	ListShopsByNameRsp struct {
+		Name string `json:"name"`
+		Area string `json:"area"`
 	}
 )
 

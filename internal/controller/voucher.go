@@ -25,7 +25,8 @@ func (v *VoucherHandler) SecKill(ctx *gin.Context) {
 	}
 	rsp, err := v.svc.VoucherSecKill(ctx, req)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, serializer.ParamErr("", err))
+		ctx.JSON(http.StatusOK, serializer.ParamErr("", err))
+		return
 	}
 	ctx.JSON(http.StatusOK, serializer.Success(rsp))
 	return

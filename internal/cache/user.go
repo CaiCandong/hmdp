@@ -10,7 +10,7 @@ import (
 
 // SaveUser saves a hash to redis
 func SaveUser(ctx context.Context, token string, user *model.User) error {
-	expire := time.Duration(viper.GetInt("server.session_expire")) * time.Second
+	expire := time.Duration(viper.GetInt("server.session_expire")) * time.Minute
 	return RedisStore.Set(ctx, token, utils.ToJSON(user), expire).Err()
 }
 

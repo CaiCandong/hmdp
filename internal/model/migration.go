@@ -11,5 +11,7 @@ func migration() {
 		&Shop{},
 		&Voucher{},
 		&VoucherOrder{},
+		&Follow{},
+		&UserInfo{},
 	)
 }
