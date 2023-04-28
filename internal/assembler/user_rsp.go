@@ -52,3 +52,15 @@ func (rsp *UserRsp) E2DInfo(e *model.UserInfo) *dto.UserInfoRsp {
 		Level:     true,
 	}
 }
+
+func (rsp *UserRsp) E2DCommonFollow(es []*model.User) []*dto.CommonFollowRsp {
+	ret := make([]*dto.CommonFollowRsp, len(es))
+	for i := range ret {
+		ret[i] = rsp.E2DCommonFollowOne(es[i])
+	}
+	return ret
+}
+
+func (rsp *UserRsp) E2DCommonFollowOne(user *model.User) *dto.CommonFollowRsp {
+	return &dto.CommonFollowRsp{Id: user.ID, NickName: user.NickName, Icon: user.Icon}
+}

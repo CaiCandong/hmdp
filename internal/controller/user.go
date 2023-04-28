@@ -5,8 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"hmdp/internal/dto"
 	"hmdp/internal/model"
+	"hmdp/internal/serializer"
 	"hmdp/internal/service"
-	"hmdp/pkg/serializer"
 	"net/http"
 )
 
@@ -36,8 +36,24 @@ func (c *UserHandler) IsFollowed(ctx *gin.Context) {
 }
 
 func (c *UserHandler) CommonFollow(ctx *gin.Context) {
-
-	// TODO 共同关注
+	req := &dto.CommonFollowReq{}
+	if err := ctx.ShouldBindUri(req); err != nil {
+		ctx.JSON(http.StatusBadRequest, serializer.ParamErr("", err))
+	}
+	// 获取当前用户id
+	currentUser, ok := ctx.Get("user")
+	if !ok {
+		ctx.JSON(http.StatusBadRequest, fmt.Errorf("获取当前用户失败"))
+		return
+	}
+	req.CurrentUserId = currentUser.(*model.User).ID
+	rsp, err := c.svc.CommonFollow(ctx, req)
+	if err != nil {
+		ctx.JSON(http.StatusOK, serializer.Err(serializer.CodeParamErr, "获取失败", err))
+		return
+	}
+	ctx.JSON(http.StatusOK, serializer.Success(rsp))
+	return
 }
 
 // FollowUser 关注
@@ -49,7 +65,11 @@ func (c *UserHandler) FollowUser(ctx *gin.Context) {
 	// 获取当前用户id
 	user := ctx.MustGet("user")
 	req.UserId = user.(*model.User).ID
-	c.svc.FollowUser(ctx, req)
+	followUser, err := c.svc.FollowUser(ctx, req)
+	if err != nil {
+		return
+	}
+	ctx.JSON(http.StatusOK, serializer.Success(followUser))
 }
 
 func (c *UserHandler) FindUserById(ctx *gin.Context) {

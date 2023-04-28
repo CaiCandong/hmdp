@@ -101,15 +101,22 @@ func (s *UserService) FollowUser(ctx *gin.Context, req *dto.FollowUserReq) (*dto
 		UserId:   req.UserId,
 		FollowId: req.ID,
 	}
-	if *req.Follow { //关注
+	// UserId 关注 FollowId
+	key := model.FollowRedisKey(req.UserId) // redis的key
+	//关注
+	if *req.Follow {
 		err := s.DB.Where("user_id = ? AND follow_id = ?", follow.UserId, follow.FollowId).FirstOrCreate(&follow).Error
 		if err != nil {
 			return nil, err
 		}
+		// 保存到redis的set中
+		cache.RedisStore.SAdd(ctx, key, req.ID)
 		return &dto.FollowUserRsp{}, nil
 	}
 	// 取消关注
 	err := s.DB.Where("user_id = ? AND follow_id = ?", follow.UserId, follow.FollowId).Delete(&follow).Error
+	cache.RedisStore.SRem(ctx, key, req.ID)
+	// 从redis的set中删除
 	if err != nil {
 		return nil, err
 	}
@@ -134,4 +141,17 @@ func (s *UserService) IsFollowed(ctx *gin.Context, req *dto.IsFollowedReq) (*dto
 		return &dto.IsFollowedRsp{Followed: false}, nil
 	}
 	return &dto.IsFollowedRsp{Followed: true}, nil
+}
+
+func (s *UserService) CommonFollow(ctx *gin.Context, req *dto.CommonFollowReq) ([]*dto.CommonFollowRsp, error) {
+	UserIds, err := cache.RedisStore.SInter(ctx, model.FollowRedisKey(req.UserId), model.FollowRedisKey(req.CurrentUserId)).Result()
+	if err != nil {
+		return nil, err
+	}
+	var users []*model.User
+	err = s.DB.Select("id, nick_name, icon").Where("id in (?)", UserIds).Find(&users).Error
+	if err != nil {
+		return nil, err
+	}
+	return s.Rsp.E2DCommonFollow(users), nil
 }

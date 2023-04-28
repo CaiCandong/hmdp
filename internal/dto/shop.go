@@ -52,8 +52,9 @@ type (
 		Success bool `json:"success"` //是否成功
 	}
 	ListShopsByNameRsp struct {
-		Name string `json:"name"`
-		Area string `json:"area"`
+		ShopId uint   `json:"id"`
+		Name   string `json:"name"`
+		Area   string `json:"area"`
 	}
 )
 

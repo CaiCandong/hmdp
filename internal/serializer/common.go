@@ -63,3 +63,7 @@ func Success(data any) Response {
 	}
 	return res
 }
+
+func CheckLogin() Response {
+	return Err(CodeCheckLogin, "未登录", nil)
+}

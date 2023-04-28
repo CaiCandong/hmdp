@@ -72,10 +72,10 @@ func (s *BlogRsp) E2DGetLike(users []*model.User) []*dto.BlogGetLikeRsp {
 }
 
 // E2DListBlogsByUserId model转换成dto
-func (s *BlogRsp) E2DListBlogsByUserId(blogs []*model.Blog) []*dto.BlogGetByUseIdRsp {
-	DTOs := make([]*dto.BlogGetByUseIdRsp, len(blogs))
+func (s *BlogRsp) E2DListBlogsByUserId(blogs []*model.Blog) []*dto.ListBlogsByUserIdRsp {
+	DTOs := make([]*dto.ListBlogsByUserIdRsp, len(blogs))
 	for i, b := range blogs {
-		DTOs[i] = &dto.BlogGetByUseIdRsp{
+		DTOs[i] = &dto.ListBlogsByUserIdRsp{
 			BlogId:   b.ID,
 			Images:   b.Images,
 			Title:    b.Title,
@@ -92,6 +92,22 @@ func (s *BlogRsp) E2DListBlogLikes(users []*model.User) []*dto.ListLikedUsersByB
 		ret[i] = &dto.ListLikedUsersByBlogIdRsp{
 			Id:   u.ID,
 			Icon: u.Icon,
+		}
+	}
+	return ret
+}
+
+func (s *BlogRsp) E2DListBlogsBySubscription(blogs []*model.Blog, lastTime float64, offset int64) *dto.ListBlogsBySubscriptionRsp {
+	ret := &dto.ListBlogsBySubscriptionRsp{
+		Blogs:    make([]*dto.ListBlogsBySubscriptionRspBlog, len(blogs)),
+		LastTime: lastTime,
+		Offset:   offset,
+	}
+	for i, b := range blogs {
+		ret.Blogs[i] = &dto.ListBlogsBySubscriptionRspBlog{
+			Images: b.Images,
+			Title:  b.Title,
+			Likes:  b.Liked,
 		}
 	}
 	return ret

@@ -2,11 +2,12 @@ package model
 
 import (
 	"gorm.io/gorm"
+	"strconv"
 )
 
 type Blog struct {
 	gorm.Model
-	ShopId   int64  `gorm:"column:shop_id;type:bigint(20);comment:商户id;NOT NULL" json:"shopId"`
+	ShopId   uint   `gorm:"column:shop_id;type:bigint(20);comment:商户id;NOT NULL" json:"shopId"`
 	UserId   uint   `gorm:"column:user_id;type:bigint(20) unsigned;comment:用户id;NOT NULL" json:"userId"`
 	Title    string `gorm:"column:title;type:varchar(255);comment:标题;NOT NULL" json:"title"`
 	Images   string `gorm:"column:images;type:varchar(2048)" json:"images"`
@@ -18,4 +19,14 @@ type Blog struct {
 
 func (m *Blog) TableName() string {
 	return "tb_blog"
+}
+
+// BlogLikeKey 点赞key
+func BlogLikeKey(id uint) string {
+	return "blog:like:" + strconv.Itoa(int(id))
+}
+
+// SubscriptionBlogsKey 订阅博客key
+func SubscriptionBlogsKey(id uint) string {
+	return "blog:subscription:" + strconv.Itoa(int(id))
 }

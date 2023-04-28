@@ -45,8 +45,9 @@ func (s *ShopRsp) E2DListShopsByName(es []*model.Shop) []*dto.ListShopsByNameRsp
 	ret := make([]*dto.ListShopsByNameRsp, len(es))
 	for i, e := range es {
 		ret[i] = &dto.ListShopsByNameRsp{
-			Name: e.Name,
-			Area: e.Area,
+			Name:   e.Name,
+			Area:   e.Area,
+			ShopId: e.ID,
 		}
 	}
 	return ret

@@ -3,8 +3,8 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"hmdp/internal/dto"
+	"hmdp/internal/serializer"
 	"hmdp/internal/service"
-	"hmdp/pkg/serializer"
 	"net/http"
 )
 

@@ -17,7 +17,7 @@ func SaveUser(ctx context.Context, token string, user *model.User) error {
 func GetUser(ctx context.Context, token string, user *model.User) error {
 	js, err := RedisStore.Get(ctx, token).Result()
 	// 刷新过期时间
-	RedisStore.Expire(ctx, token, time.Duration(viper.GetInt("server.session_expire"))*time.Second)
+	RedisStore.Expire(ctx, token, time.Duration(viper.GetInt("server.session_expire"))*time.Minute)
 	if err != nil {
 		return err
 	}

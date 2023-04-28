@@ -1,6 +1,9 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+	"gorm.io/gorm"
+)
 
 type Shop struct {
 	gorm.Model
@@ -20,4 +23,7 @@ type Shop struct {
 
 func (t *Shop) TableName() string {
 	return "tb_shop"
+}
+func ShopGeoKey(TypeId uint64, ShopId uint) string {
+	return fmt.Sprintf("shop:geo:%d:%d", TypeId, ShopId)
 }

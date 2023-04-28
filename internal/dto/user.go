@@ -28,6 +28,10 @@ type (
 		ID     uint  `json:"id" uri:"id" binding:"required"`         // 被关注的用户id
 		Follow *bool `json:"follow" uri:"follow" binding:"required"` // true:关注 false:取消关注
 	}
+	CommonFollowReq struct {
+		UserId        uint `json:"userId" uri:"userId" binding:"required"`
+		CurrentUserId uint `json:"currentUserId"`
+	}
 )
 
 type (
@@ -66,5 +70,10 @@ type (
 		Followed bool `json:"followed"` // true:已关注 false:未关注
 	}
 	FollowUserRsp struct {
+	}
+	CommonFollowRsp struct {
+		Id       uint   `json:"id"`
+		NickName string `json:"nick_name"`
+		Icon     string `json:"icon"`
 	}
 )

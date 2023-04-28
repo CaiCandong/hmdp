@@ -2,11 +2,16 @@ package cache
 
 import (
 	"context"
-	"fmt"
+	"github.com/redis/go-redis/v9"
+	"hmdp/internal/model"
+	"strconv"
 )
 
 func IsLike(ctx context.Context, blogId uint, userId uint) bool {
-	key := fmt.Sprintf("like:%d", blogId)
-	result, _ := RedisStore.SIsMember(ctx, key, userId).Result()
-	return result
+	key := model.BlogLikeKey(blogId)
+	_, err := RedisStore.ZScore(ctx, key, strconv.Itoa(int(userId))).Result()
+	if err == redis.Nil { // 未点赞
+		return false
+	}
+	return true
 }
