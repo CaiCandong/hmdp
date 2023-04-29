@@ -28,7 +28,14 @@ func InitRedisStore() *redis.Client {
 	RedisStore = client
 	return client
 }
-
+func InitBlogGeo() {
+	// 将经纬度添加到redis中
+	RedisStore.GeoAdd(context.Background(), "blog_geo", &redis.GeoLocation{
+		Name:      "blog1",
+		Longitude: 116.405285,
+		Latitude:  39.904989,
+	})
+}
 func GetShopById(ctx context.Context, shop *model.Shop) error {
 	js, err := RedisStore.Get(ctx, fmt.Sprintf("shop:%v", shop.ID)).Result()
 	// 未命中

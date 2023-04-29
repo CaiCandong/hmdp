@@ -16,7 +16,7 @@ func NewShopHandler(svc *service.ShopService) *ShopHandler {
 	return &ShopHandler{svc}
 }
 
-func (handler *ShopHandler) OfType(ctx *gin.Context) {
+func (handler *ShopHandler) ListShopsByType(ctx *gin.Context) {
 	req := &dto.ListShopsByTypeReq{}
 	if err := ctx.ShouldBind(req); err != nil {
 		ctx.JSON(http.StatusBadRequest, serializer.ParamErr("", err))

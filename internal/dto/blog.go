@@ -24,7 +24,7 @@ type (
 
 type (
 	BlogHotReq struct {
-		Current int `json:"current" from:"current"`
+		Current int `json:"current"  form:"current"`
 	}
 	BlogHotRsp struct {
 		Id       uint   `json:"id"`
@@ -43,8 +43,8 @@ type (
 
 type (
 	CreateBlogReq struct {
-		ShopId  uint   `json:"shopId"`
 		UserId  uint   `json:"userId"`
+		ShopId  uint   `json:"shopId" binding:"required"`
 		Content string `json:"content" binding:"required"`
 		Images  string `json:"images" binding:"required"`
 		Title   string `json:"title" binding:"required"`

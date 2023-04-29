@@ -8,8 +8,11 @@ import (
 type ShopRsp struct {
 }
 
-func (s *ShopRsp) E2DListShopsByType(es []*model.Shop) []*dto.ListShopsByTypeRsp {
+func (s *ShopRsp) E2DListShopsByType(es []*model.Shop, distances []float64) []*dto.ListShopsByTypeRsp {
 	ret := make([]*dto.ListShopsByTypeRsp, len(es))
+	if distances == nil {
+		distances = make([]float64, len(es))
+	}
 	for i, e := range es {
 		ret[i] = &dto.ListShopsByTypeRsp{
 			ID:       e.ID,
@@ -18,7 +21,7 @@ func (s *ShopRsp) E2DListShopsByType(es []*model.Shop) []*dto.ListShopsByTypeRsp
 			Comments: e.Comments,
 			Images:   e.Images,
 			Area:     e.Area,
-			Distance: 0,
+			Distance: distances[i],
 			AvgPrice: e.AvgPrice,
 			Address:  e.Address,
 		}

@@ -8,8 +8,8 @@ type (
 	ListShopsByTypeReq struct {
 		TypeId  uint    `json:"typeId" form:"typeId" binding:"required"`
 		Current int     `json:"current" form:"current"` //分页信息 单页多少?
-		X       float32 `json:"x" form:"x"`
-		Y       float32 `json:"y" form:"y"`
+		X       float64 `json:"x" form:"x"`
+		Y       float64 `json:"y" form:"y"`
 	}
 
 	UpdateShopByIdReq struct {
@@ -20,7 +20,7 @@ type (
 		AvgPrice  uint64 `json:"avgPrice"`  //店铺人均价格
 		Score     uint32 `json:"score"`     //店铺评分
 		Name      string `json:"name"`      //店铺名称
-		TypeId    uint64 `json:"typeId"`    //店铺类型ID
+		TypeId    uint   `json:"typeId"`    //店铺类型ID
 		ID        uint   `json:"id"`        //店铺ID
 	}
 	ListShopsByNameReq struct { //查询所有店铺
@@ -38,15 +38,15 @@ type (
 		Address  string `json:"address"`
 	}
 	ListShopsByTypeRsp struct {
-		ID       uint   `json:"id"`
-		Name     string `json:"name"`
-		Score    uint32 `json:"score"`
-		Comments uint32 `json:"comments"`
-		Images   string `json:"images"`
-		Area     string `json:"area"`
-		Distance int    `json:"distance"`
-		AvgPrice uint64 `json:"avgPrice"`
-		Address  string `json:"address"`
+		ID       uint    `json:"id"`
+		Name     string  `json:"name"`
+		Score    uint32  `json:"score"`
+		Comments uint32  `json:"comments"`
+		Images   string  `json:"images"`
+		Area     string  `json:"area"`
+		Distance float64 `json:"distance"`
+		AvgPrice uint64  `json:"avgPrice"`
+		Address  string  `json:"address"`
 	}
 	UpdateShopByIdRsp struct {
 		Success bool `json:"success"` //是否成功

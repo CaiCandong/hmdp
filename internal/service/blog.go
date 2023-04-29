@@ -57,7 +57,7 @@ func (svc *BlogService) FindBlogById(ctx *gin.Context, req *dto.FindBlogByIdReq)
 // ListHotBlogs 获取热门博客
 func (svc *BlogService) ListHotBlogs(ctx *gin.Context, req *dto.BlogHotReq) ([]*dto.BlogHotRsp, error) {
 	var blogs []*model.Blog
-	page, pageSize := req.Current, 5
+	page, pageSize := req.Current-1, 5
 	err := svc.DB.Preload("User").Offset(page * pageSize).Limit(pageSize).Find(&blogs).Error
 	if u, ok := ctx.Get("user"); ok {
 		return svc.Rsp.E2DHot(blogs, u.(*model.User)), err

@@ -1,14 +1,20 @@
 package router
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
+	"hmdp/internal/cache"
 	"hmdp/internal/di"
 	"hmdp/internal/middleware"
+	"hmdp/internal/model"
+	"strconv"
 )
 
 func InitRoute() *gin.Engine {
 	router := gin.Default()
 	handlers := di.InitHandlers()
+	//InitShopGeo()
 
 	//router.Use(middleware.EnableCookieSession())
 	router.Use(middleware.CurrentUserByToken())
@@ -30,7 +36,7 @@ func InitRoute() *gin.Engine {
 	router.GET("/shop-type/list", handlers.ShopTypeController.ListShopTypes)
 	// 绑定商家相关的路由
 	router.GET("/shop/:id", handlers.ShopHandler.FindShopById)
-	router.GET("/shop/of/type", handlers.ShopHandler.OfType)
+	router.GET("/shop/of/type", handlers.ShopHandler.ListShopsByType)
 	router.GET("/shop/of/name", handlers.ShopHandler.ListShopsByName)
 	router.PUT("/shop/:id", handlers.ShopHandler.Update)
 	// 绑定用户相关的路由
@@ -50,4 +56,18 @@ func InitRoute() *gin.Engine {
 		router.GET("/user/info/:id", handlers.UserHandler.UserInfo) //用户详细信息
 	}
 	return router
+}
+
+func InitShopGeo() {
+	db := model.GetDB()
+	var shops []model.Shop
+	db.Find(&shops)
+	for _, shop := range shops {
+		key := model.ShopGeoKey(shop.TypeId)
+		cache.RedisStore.GeoAdd(context.Background(), key, &redis.GeoLocation{
+			Name:      strconv.Itoa(int(shop.ID)),
+			Longitude: shop.X,
+			Latitude:  shop.Y,
+		})
+	}
 }
